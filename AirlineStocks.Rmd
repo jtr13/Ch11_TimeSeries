@@ -1,0 +1,30 @@
+---
+title: "Airline Stocks"
+author: "Joyce Robbins"
+date: "2017-11-10"
+output: github_document
+---
+
+```{r}
+
+library(tidyverse)
+library(broom)
+```
+
+We use the [**quantmod**](https://www.quantmod.com/) package to get stock prices from Q3 2015 to the present, for four stocks--Alaska Air (ALK), JetBlue Airways (JBLU), Spirit Airlines (SAVE), and Hawaiian Holdings (HA)--discussed in this article: ["4 Top Airline Stocks to Buy Now"](https://www.fool.com/investing/2017/11/08/4-top-airline-stocks-to-buy-now.aspx).
+
+```{r}
+# stock symbols 
+stocks <- c("ALK", "JBLU", "SAVE", "HA")
+
+# get multiple stocks
+df <- tidyquant::tq_get(stocks, from = "2015-10-01")
+
+df2 <- df %>% group_by(symbol) %>% mutate(close = 100*close/close[1]) %>% ungroup()
+
+
+ggplot(df2, aes(x = date, y = close, color = symbol)) + 
+  geom_line()
+       
+```
+

@@ -1,0 +1,156 @@
+---
+title: "Time Series, part 2c"
+output: 
+  slidy_presentation:
+    css: styles5293.css
+    fig_height: 5
+    fig_width: 7
+    df_print: kable
+---
+
+## Exercise
+
+1. Import `WA_Sales_Products_2012-14.csv` and decide on a strategy for handling the dates for plotting.
+
+2. What is the overall trend in revenue over time?
+
+3. How do the order method types compare in terms of sales?
+
+4. Which combinations of method types and retailer types have the highest revenues?
+
+5. Explore the data as you see fit.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE,
+                      error = TRUE)
+```
+
+##
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+# read file
+mydat <- read_csv("WA_Sales_Products_2012-14.csv")
+str(mydat)
+```
+
+## Quarter variable
+
+(There are other ways to deal with quarterly data.)
+
+```{r}
+# convert Quarter to a single numeric value Q
+mydat$Q <- as.numeric(substr(mydat$Quarter, 2, 2))
+
+# convert Q to end-of-quarter date
+mydat$Date <- as.Date(paste0(mydat$Year, "-",
+                             as.character(mydat$Q*3),
+                             "-30"))
+
+# Check that dates look ok
+unique(mydat$Date)
+```
+
+
+## Plot all Revenue by Date
+```{r}
+Revdata <- mydat %>% group_by(Date) %>% summarize(Revenue = sum(Revenue))
+
+ggplot(Revdata, aes(Date, Revenue)) + geom_line()
+```
+
+## Plot data by Revenue by Date, grouped by Order method type
+```{r}
+Methoddata <- mydat %>% group_by(Date, `Order method type`) %>%
+    summarize(Revenue = sum(Revenue))
+
+ggplot(Methoddata, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+        date_breaks = "6 months", date_labels = "%b %Y")
+```
+
+## Add points to show the frequency of the data
+```{r}
+ggplot(Methoddata, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+                 date_breaks = "6 months", date_labels = "%b %Y") +
+    geom_point(aes(color = `Order method type`))
+```
+
+## Filter out Web sales
+```{r}
+Noweb <- Methoddata %>% filter(`Order method type` != "Web")
+
+ggplot(Noweb, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+                 date_breaks = "6 months", date_labels = "%b %Y")
+```
+
+## Filter out 2013 data
+```{r}
+No2013 <- Noweb %>% filter(year(Date) != 2013)
+ggplot(No2013, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+                 date_breaks = "6 months", date_labels = "%b %Y")
+```
+
+## Add points to see gaps
+```{r}
+ggplot(No2013, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+                 date_breaks = "6 months", date_labels = "%b %Y") +
+    geom_point(aes(color = `Order method type`))
+```
+
+## Change all 2013 Revenue data to NA
+```{r}
+Noweb$Revenue[year(Noweb$Date) == 2013] <- NA
+ggplot(Noweb, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+                 date_breaks = "6 months", date_labels = "%b %Y") +
+    geom_point(aes(color = `Order method type`))
+```
+
+## Facet on retailer type
+```{r}
+Facetdata <- mydat %>% 
+    group_by(Date, `Order method type`, `Retailer type`) %>%
+    summarize(Revenue = sum(Revenue))
+
+ggplot(Facetdata, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    facet_wrap(~`Retailer type`) + 
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y")
+```
+
+## Filter web sales
+```{r}
+Facetdata <- Facetdata %>% filter(`Order method type` != "Web")
+ggplot(Facetdata, aes(Date, Revenue)) +
+    geom_line(aes(color = `Order method type`)) +
+    facet_wrap(~`Retailer type`) + 
+    scale_x_date(date_breaks = "1 year", date_labels = "%Y")
+```
+
+
+## Facet by quarter
+```{r}
+Revdata <- Revdata %>% mutate(Quarter = paste("Quarter ", quarter(Date)))
+ggplot(Revdata, aes(Date, Revenue)) + geom_line() +
+    geom_point() +
+    scale_x_date(limits = c(as.Date("2011-11-30"), NA),
+                 date_labels = "%Y") +
+    facet_wrap(~Quarter)
+
+```
+

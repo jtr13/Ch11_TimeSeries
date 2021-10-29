@@ -1,0 +1,27 @@
+---
+title: "gam"
+author: "Joyce Robbins"
+date: "2/22/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(vcd)
+library(tidyverse)
+goals <- Bundesliga %>% group_by(Year) %>% 
+  summarize(hg = sum(HomeGoals), ag = sum(AwayGoals),
+            ng = n(), avg = (hg+ag)/ng)
+
+
+ggplot(goals, aes(Year, avg)) + geom_point() + 
+  geom_line() + stat_smooth(method = "loess", span = .5) 
+
+
+ggplot(goals, aes(Year, avg)) + geom_point() + 
+  geom_line() + stat_smooth(method = "gam", formula = y ~ s(x))
+```
+

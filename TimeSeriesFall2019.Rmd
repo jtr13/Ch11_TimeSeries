@@ -1,0 +1,447 @@
+---
+title: "Time Series"
+output: 
+  slidy_presentation:
+    css: styles5293.css
+    fig_height: 4
+    fig_width: 6
+    df_print: kable
+---
+
+# Time Series
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE,
+                      message = FALSE, cache = TRUE)
+```
+
+
+Chapter 11
+
+Lines for time series, w/ time on the x-axis
+
+# Multiple time series
+```{r mortgagepres}
+# data from: April 18, 2017
+library(tidyverse)
+df <- read_csv("mortgage.csv")
+df <- df %>% gather(key = TYPE, value = RATE, -DATE) %>%
+  mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE))#putslegendincorrect order
+
+
+g <- ggplot(df, aes(DATE, RATE, color = TYPE)) + geom_line() +
+  ggtitle("U.S. Mortgage Rates") +
+  labs (x = "", y = "percent") +
+  theme_grey(16) +
+  theme(legend.title = element_blank())
+g
+```
+
+
+# 
+```{r mortgage}
+ggplot(df, aes(DATE, RATE, fill = TYPE)) + geom_col() +
+    ggtitle("U.S. Mortgage Rates", subtitle = "Not recommended!") +
+  theme_grey(16)
+```
+
+# Filter
+
+```{r}
+library(lubridate)
+df2010 <- df %>% filter(year(DATE) == 2010)
+ggplot(df2010, aes(DATE, RATE, color = TYPE)) + 
+  geom_line() +
+  ggtitle("U.S. Mortgage Rates") +
+  theme_grey(16)
+```
+
+# Overall long-term trend (secular)
+
+```{r}
+dfman <- read_csv("ManchesterByTheSea.csv") %>% 
+  mutate(Gross = Gross/1000)
+g <- ggplot(dfman, aes(Date, Gross)) + 
+  geom_line() +
+    ggtitle("Manchester by the Sea",
+            "Daily Gross (1000s US$), United States") +
+  xlab("2016-2017") +
+  theme_grey(16)
+g
+```
+
+# Loess smoother (non-parametric)
+
+```{r loess}
+g <- ggplot(dfman, aes(Date, Gross)) + 
+  geom_point() + ylab("Gross (1000s US$)") +
+  theme_grey(16)
+g + geom_line(color = "grey50") +
+  geom_smooth(method = "loess", se = FALSE, lwd =1.5) +
+  ggtitle("Loess smoother")
+```
+
+# Under / overfitting
+
+<img src="loesscrop.png" width = "400" />
+
+
+# Default smoothing parameter  .75
+
+```{r}
+g + geom_smooth(method = "loess", span = .75, se = FALSE)
+```
+
+# Change smoothing parameter  .1
+
+```{r}
+g + geom_smooth(method = "loess", span = .1, se = FALSE)
+```
+
+# Change smoothing parameter  .5
+
+```{r}
+g + geom_smooth(method = "loess", span = .5, se = FALSE)
+```
+
+
+# Change smoothing parameter  .9
+
+```{r}
+g + geom_smooth(method = "loess", span = .9, se = FALSE)
+```
+
+#
+```{r}
+# with weekly summary
+weekly <- dfman %>%
+    group_by(Year = year(Date),
+             Week = week(Date)) %>%
+    summarize(AvgWeeklyGross = mean(Gross)) %>%
+    mutate(Date = as.Date("2015-12-27") +
+               365*(Year - 2016) +
+               7*(Week -1))
+```
+
+
+```{r}
+# manually added legend, don't do this unless there's really no choice
+ggplot(dfman, aes(Date, Gross/1000)) +
+    geom_line(color = "grey30") +
+    geom_line(data = weekly,
+              aes(Date, AvgWeeklyGross/1000),
+              color = "blue", lwd = 1.5) +
+    geom_smooth(color = "deeppink", lwd = 1.5,
+                se = FALSE) +
+    annotate("text", x = as.Date("2017-02-15"),
+             y = 1.65, label = "average weekly gross",
+             color = "blue", hjust = 0) +
+    annotate("segment", x = as.Date("2017-02-01"),
+             xend = as.Date("2017-02-12"), y = 1.65,
+             yend = 1.65, color = "blue", lwd = 1.5) +
+    annotate("text", x = as.Date("2017-02-15"),
+             y = 1.5, label = "geom_smooth()",
+             color = "deeppink", hjust = 0) +
+    annotate("segment", x = as.Date("2017-02-01"),
+             xend = as.Date("2017-02-12"), y = 1.5,
+             yend = 1.5, color = "deeppink", lwd = 1.5) +
+    scale_x_date(date_labels = "%b\n%Y") +
+    ylab("Daily Box Office Gross \n (in millions US$)") +
+    xlab("") +
+    ggtitle("Manchester by the Sea",
+            "Daily Gross, United States") +
+    theme_bw(16)
+```
+
+
+# Cyclical trends
+
+```{r}
+ggplot(dfman, aes(Date, Gross)) + geom_line() +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+# Are there cyclical patterns?
+
+Add points
+
+```{r}
+ggplot(dfman, aes(Date, Gross)) + 
+  geom_line() + 
+  geom_point() +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+# Look for patterns interactively
+
+```{r}
+library(plotly)
+p <- plot_ly(
+    dfman, x = ~Date, y = ~Gross,
+    type = 'scatter',
+    mode = 'lines+markers',
+    # Hover text:
+    hoverinfo = 'text',
+    text = ~paste(Day)
+)
+p
+```
+
+# Mark the pattern
+
+```{r}
+g <- ggplot(dfman, aes(Date, Gross)) + 
+  geom_line() +
+  ggtitle("Manchester by the Sea", "Daily Gross, United States")
+saturday <- dfman %>% filter(wday(Date) == 7)
+g + geom_point(data = saturday, aes(Date, Gross, color = Day)) +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+
+# Facet to test (remove) cyclical pattern
+
+```{r, fig.height = 6}
+# facets
+ggplot(dfman, aes(Date, Gross)) +
+    geom_line() +
+    facet_grid(wday(Date, label = TRUE)~.) +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+# Another view
+
+```{r facetbyday, fig.width = 8}
+ggplot(dfman, aes(Date, Gross)) +
+  geom_line(color = "grey30") + 
+  geom_point(size = 1) +
+  facet_grid(.~wday(Date, label = TRUE)) +
+  scale_x_date(date_breaks = "2 months", date_labels ="%b") +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+# With smoother
+
+```{r facetbydaysmooth, fig.width=8}
+ggplot(dfman, aes(Date, Gross)) +
+  geom_line(color = "grey30") + 
+  geom_point(size = 1) +
+  geom_smooth(se = FALSE) +
+  facet_grid(.~wday(Date, label = TRUE)) +
+  scale_x_date(date_breaks = "2 months", date_labels ="%b") +
+  ylab("Gross (1000s US$)") +
+  theme_grey(16)
+```
+
+# Air Passengers
+
+```{r, echo = TRUE}
+str(AirPassengers)
+plot(AirPassengers)
+```
+
+# `monthplot()`
+```{r, echo = TRUE}
+monthplot(AirPassengers)
+```
+
+
+# What about the abnormalities?
+
+## Label by day of week
+
+```{r christmas}
+christmas <- dfman %>%
+    filter(Date >= as.Date("2016-12-20") &
+               Date <= ("2017-01-03"))
+
+ggplot(christmas, aes(Date, Gross)) +
+    geom_label(aes(label = wday(Date, label = TRUE))) +
+    geom_line(color = "cornflowerblue") + 
+    scale_x_date(date_labels = "%b\n%d",
+                 date_breaks = "1 day")
+```
+
+# Different pattern for Christmas Week
+
+## Label by day of month
+
+```{r christmas2}
+ggplot(christmas, aes(Date, Gross)) +
+    geom_line(color = "cornflowerblue", lwd = 1.1) + 
+    geom_point(color = "cornflowerblue", size = 2) +
+    geom_label(data = christmas, 
+               aes(x = Date, y = Gross + .06, 
+                   label = day(Date))) +
+    scale_x_date(date_labels = "%a",
+                 date_breaks = "1 day") +
+    ggtitle("Manchester by the Sea",
+            "Chistmas Week Box Office Gross") +
+    labs(x = "Dec 2016 - Jan 2017", 
+         y = "Daily Gross (1000s $US)") +
+    theme_grey(14)
+```
+
+
+# Highlight the abnormality
+
+```{r}
+# annotate Christmas Week
+start <- as.Date("2016-12-24")
+end <- as.Date("2017-01-02")
+g + annotate("rect", xmin = start, xmax = end,
+             ymin = -Inf, ymax = Inf, fill = "green",
+             alpha = .2) +
+    annotate("text", x = end + 2,
+             y = 1500, label = "Dec 24 - Jan 2",
+             color = "green", hjust = 0) +
+    theme_classic()
+
+```
+
+# Comparisons (multi-line plots)
+
+```{r}
+set.seed(5702)
+tidydf <- data.frame(time = 1:6, 
+                     y1 = round(rnorm(6, 100, 50), 2), 
+                     y2 = round(rnorm(6, 10,5), 2)) %>% 
+  gather(key, value, -time)
+ggplot(tidydf, aes(time, value, col = key)) +
+  geom_line()
+```
+
+# Scale the data (create an index)
+
+Original data:
+
+```{r}
+tidydf
+```
+
+# Scale the data (create an index)
+
+Each value is divided by the first value for that group and multiplied by 100:
+```{r}
+tidydf <- tidydf %>% 
+  group_by(key) %>% 
+  mutate(index = round(100*value/value[1], 2)) %>% 
+  ungroup()
+tidydf
+```
+
+# Replot
+
+```{r}
+ggplot(tidydf, aes(time, index, col = key)) +
+  geom_line() +
+  guides(color = guide_legend(reverse = TRUE)) 
+```
+
+# Discrete data
+```{r inspection}
+set.seed(5702)
+day <- 1:31
+number <- 10 * (day - 14)^2 + 2000 + rnorm(1:31, 0, 400)
+df <- data.frame(day, number)
+ggplot(df, aes(day, number)) +
+  geom_line(color = "deeppink") +
+  geom_point(color = "deeppink") +
+  scale_x_continuous(breaks = 1:31) +
+  scale_y_continuous(limits = c(0, 5000)) +
+  ggtitle("Average Motor Vehicle Inspections per Day",
+          subtitle = "(fake data)") +
+  labs(x = "day of month", y="number of inspections") +
+  theme(plot.title = element_text(size = 16))
+```
+
+# Better for individual values
+```{r}
+ggplot(df, aes(day, number)) +
+  geom_col() +
+  scale_x_continuous(breaks = 1:31) +
+  ggtitle("Average Motor Vehicle Inspections per Day") +
+  labs(x = "day of month", y="number of inspections") +
+  theme(plot.title = element_text(size = 16))
+```
+
+# Data Frequency
+
+```{r}
+# read file
+mydat <- read_csv("WA_Sales_Products_2012-14.csv") %>% 
+  mutate(Revenue = Revenue/1000000)
+
+# convert Quarter to a single numeric value Q
+mydat$Q <- as.numeric(substr(mydat$Quarter, 2, 2))
+
+# convert Q to end-of-quarter date
+mydat$Date <- as.Date(paste0(mydat$Year, "-",
+                             as.character(mydat$Q*3),
+                             "-30"))
+
+# Check that dates look ok
+# unique(mydat$Date)
+```
+
+
+
+```{r}
+Methoddata <- mydat %>% group_by(Date, `Order method type`) %>%
+    summarize(Revenue = sum(Revenue))
+
+g <- ggplot(Methoddata, aes(Date, Revenue,
+                            color = `Order method type`)) +
+    geom_line(aes(group = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+        date_breaks = "6 months", date_labels = "%b %Y") +
+  ylab("Revenue in mil $")
+g
+```
+
+# Add points to show the frequency of the data
+```{r}
+g + geom_point()
+```
+
+# Gaps
+
+```{r}
+No2013 <- Methoddata %>% filter(year(Date) != 2013)
+g <- ggplot(No2013, aes(Date, Revenue,
+                            color = `Order method type`)) +
+    geom_line(aes(group = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+        date_breaks = "6 months", date_labels = "%b %Y") +
+  ylab("Revenue in mil $")
+g
+```
+
+# Add points to show the frequency of the data
+
+```{r}
+g + geom_point()
+```
+
+# Another option: leave gaps
+
+(set missing values to NA)
+
+```{r}
+Methoddata$Date[year(Methoddata$Date)==2013] <- NA
+g <- ggplot(Methoddata, aes(Date, Revenue,
+                            color = `Order method type`)) + 
+    geom_path(aes(group = `Order method type`)) +
+    scale_x_date(limits = c(as.Date("2012-02-01"), as.Date("2014-12-31")),
+        date_breaks = "6 months", date_labels = "%b %Y") +
+  ylab("Revenue in mil $")
+g
+```
+
+

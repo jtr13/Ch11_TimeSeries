@@ -1,0 +1,108 @@
+---
+title: "Time Series, part 2b"
+output: 
+  slidy_presentation:
+    css: styles5293.css
+    fig_height: 5
+    fig_width: 7
+    df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE,
+                      error = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+
+## Exercise
+
+Read `mortgage2.csv` with the date column properly formatted, or import the data and convert the date column to `Date` class
+
+
+```{r}
+df <- read_csv("mortgage2.csv")
+df <- df %>% 
+  mutate(DATE = as.Date(DATE, format = "%A, %B %d, %Y"))
+head(df)
+```
+
+## Working with dates
+
+```{r}
+"2017-11-02" - "2017-01-01"
+as.Date("2017-11-02") - as.Date("2017-01-01")
+as.integer("2017-11-02")
+as.integer(as.Date("2017-11-02"))
+"2017-11-12" > "2017-3-3"
+as.Date("2017-11-12") > as.Date("2017-3-3")
+today <- Sys.Date()
+class(today)
+year(today)
+quarters(today)
+months(today)
+weekdays(today)
+julian(today)
+```
+
+## lubridate
+```{r}
+library(lubridate)
+grep("Asia", OlsonNames(), value = TRUE) %>% head()
+today() == today(tzone = "Asia/Shanghai")
+today(tzone = "Asia/Manila") == today(tzone = "Asia/Shanghai")
+```
+
+## lubridate (functions to replace `as.Date`)
+```{r}
+dmy("1/1/17") %>% str()
+```
+
+## using date scales in `ggplot2`
+```{r}
+head(df)
+tidydf <- gather(df, key, value, -DATE)
+head(tidydf)
+# default span = .75 (see ?loess for more details)
+ggplot(tidydf, aes(DATE, value, color = key)) + geom_smooth(span = 2) + geom_line()
+```
+
+##
+```{r}
+ggplot(df, aes(DATE, `30 YR FIXED`)) + geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  scale_x_date(breaks = ymd("2008-09-29")) + theme_grey(16)
+```
+
+##
+```{r}
+ggplot(df, aes(DATE, `30 YR FIXED`)) + geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  scale_x_date(breaks = ymd("2008-09-29"), limits = c(ymd("2008-01-01"), ymd("2008-12-31"))) + theme_grey(16)
+```
+
+##
+```{r}
+ggplot(df, aes(DATE, `30 YR FIXED`)) + geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  scale_x_date(breaks = ymd("2008-09-29"), limits = c(ymd("2008-01-01"), ymd("2009-12-31")),
+               date_labels = "%A, %B %d, %Y") + theme_grey(16)
+```
+
+##
+```{r}
+ggplot(df, aes(DATE, `30 YR FIXED`)) + geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  scale_x_date(date_labels = "%b '%y") + theme_grey(16)
+```
+
+##
+```{r}
+ggplot(df, aes(DATE, `30 YR FIXED`)) + geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  scale_x_date(date_breaks = "2 years", 
+               date_labels = "%b '%y") + theme_grey(16)
+```

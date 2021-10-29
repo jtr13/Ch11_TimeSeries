@@ -1,0 +1,49 @@
+body { font-family: 'Source Sans Pro', sans-serif; }
+h1, h2, h3 {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: normal;
+}
+
+h2 { font-size: 140%;}
+
+div.slide h1 { font-size: 120%;
+  font-weight: bold;}
+
+
+/*  https://designschool.canva.com/blog/website-color-schemes/ */
+div.kable-table	tr.header {
+    background-color: #DBDBDB;  /* paper (darkened) */
+    font-weight: bold;
+	}
+
+
+div.kable-table	tr.even {
+    background-color: #F4F4F4;  /* paper */
+    font-weight: bold;
+	}
+
+
+div.kable-table tr.odd {
+	background-color: #fffae6;  /* silk (lightened) */
+	font-weight: bold;
+	}
+
+
+div.kable-table td, th {
+	padding-left: 25px;
+	padding-right: 25px;
+	}
+
+
+/* https://stackoverflow.com/questions/31753897/2-column-section-in-r-markdown */
+.col2 {
+    columns: 2 200px;         /* number of columns and width in pixels*/
+    vertical-align: top;
+    -webkit-columns: 2 200px; /* chrome, safari */
+    -moz-columns: 2 200px;    /* firefox */
+  }
+.col3 {
+    columns: 3 100px;
+    -webkit-columns: 3 100px;
+    -moz-columns: 3 100px;
+  }
