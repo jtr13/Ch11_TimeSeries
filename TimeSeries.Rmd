@@ -23,45 +23,47 @@ Lines for time series, w/ time on the x-axis
 
 # Multiple time series
 ```{r mortgagepres}
-# data from: April 18, 2017
+# data from: https://www.freddiemac.com/pmms/docs/historicalweeklydata.xls
 library(tidyverse)
-df <- read_csv("mortgage.csv")
-df <- df %>% gather(key = TYPE, value = RATE, -DATE) %>%
-  mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE))# puts legend incorrect order
+df <- read_csv("historicalmortgage.csv")
+df <- df |> 
+  pivot_longer(cols = -DATE, names_to = "TYPE", values_to = "RATE") |> 
+  mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE)) # puts legend in correct order
 
-
-g <- ggplot(df, aes(DATE, RATE, color = TYPE)) + geom_line() +
+ggplot(df, aes(DATE, RATE, color = TYPE)) +
+  geom_line() +
   ggtitle("U.S. Mortgage Rates") +
   labs (x = "", y = "percent") +
   theme_grey(16) +
   theme(legend.title = element_blank())
-g
 ```
 
 
 # 
 ```{r mortgage}
-ggplot(df, aes(DATE, RATE, fill = TYPE)) + geom_col() +
-    ggtitle("U.S. Mortgage Rates", subtitle = "Not recommended!")
+ggplot(df, aes(DATE, RATE, fill = TYPE)) +
+  geom_col() +
+  ggtitle("U.S. Mortgage Rates", subtitle = "Not recommended!")
 ```
 
 # Filter
 
 ```{r}
 library(lubridate)
-df2010 <- df %>% filter(year(DATE) == 2010)
-ggplot(df2010, aes(DATE, RATE, color = TYPE)) + geom_line() +
-    ggtitle("U.S. Mortgage Rates")
+df2020 <- df |>
+  filter(year(DATE) == 2020)
+ggplot(df2020, aes(DATE, RATE, color = TYPE)) +
+  geom_line() +
+  ggtitle("U.S. Mortgage Rates")
 ```
 
 # Overall long-term trend (secular)
 
 ```{r}
 dfman <- read_csv("ManchesterByTheSea.csv")
-g <- ggplot(dfman, aes(Date, Gross)) + 
+g <- ggplot(dfman, aes(Date, Gross)) +
   geom_line() +
-    ggtitle("Manchester by the Sea",
-            "Daily Gross (US$), United States") +
+  ggtitle("Manchester by the Sea", "Daily Gross (US$), United States") +
   xlab("2016-2017")
 g
 ```
@@ -69,8 +71,22 @@ g
 # Loess smoother (non-parametric)
 
 ```{r loess}
-g <- ggplot(dfman, aes(Date, Gross)) + geom_point()
-g + geom_line(color = "grey50") +geom_smooth(method = "loess", se = FALSE, lwd =1.5) + ggtitle("Loess smoother")
+dfman$Group <- round(1:nrow(dfman)/(nrow(dfman)/5))
+g <- ggplot(dfman, aes(Date, Gross)) +
+  geom_point()
+g +
+  geom_line(color = "grey50") +
+  geom_smooth(method = "loess", se = FALSE, lwd =1.5) +
+  ggtitle("Loess smoother")
+```
+
+# Loess smoother (non-parametric)
+
+```{r}
+g +
+  geom_line(color = "grey50") +
+  geom_smooth(aes(group = Group), method = 'lm', color = "red", se = FALSE) + 
+  geom_smooth(color = "blue", se = FALSE)
 ```
 
 # Under / overfitting
@@ -106,10 +122,10 @@ g + geom_smooth(method = "loess", span = .9, se = FALSE)
 #
 ```{r, echo=FALSE}
 # with weekly summary
-weekly <- dfman %>%
+weekly <- dfman |>
     group_by(Year = year(Date),
-             Week = week(Date)) %>%
-    summarize(AvgWeeklyGross = mean(Gross)) %>%
+             Week = week(Date)) |>
+    summarize(AvgWeeklyGross = mean(Gross)) |>
     mutate(Date = as.Date("2015-12-27") +
                365*(Year - 2016) +
                7*(Week -1))
@@ -178,7 +194,7 @@ p
 g <- ggplot(dfman, aes(Date, Gross)) + geom_line() +
     ggtitle("Manchester by the Sea",
             "Daily Gross, United States")
-saturday <- dfman %>% filter(wday(Date) == 7)
+saturday <- dfman |> filter(wday(Date) == 7)
 g + geom_point(data = saturday, aes(Date, Gross),
                color = "deeppink")
 ```
@@ -227,7 +243,7 @@ monthplot(AirPassengers)
 ## Label by day of week
 
 ```{r christmas}
-christmas <- dfman %>%
+christmas <- dfman |>
     filter(Date >= as.Date("2016-12-20") &
                Date <= ("2017-01-03"))
 
@@ -279,9 +295,10 @@ g + annotate("rect", xmin = start, xmax = end,
 
 ```{r}
 set.seed(5702)
-tidydf <- data.frame(time = 1:6, y1 = round(rnorm(6, 10,5), 2), y2 = round(rnorm(6, 100, 50), 2)) %>% 
-  gather(key, value, -time)
-ggplot(tidydf, aes(time, value, col = key)) +
+tidydf <- data.frame(time = 1:6, y1 = round(rnorm(6, 100, 50), 2),
+           y2 = round(rnorm(6, 10, 5), 2)) |> 
+  pivot_longer(cols = -time)
+ggplot(tidydf, aes(time, value, col = name)) +
   geom_line()
 ```
 
@@ -291,13 +308,12 @@ Each value is divided by the first value for that group and multiplied by 100:
 
 ```{r}
 tidydf
-tidydf <- tidydf %>% group_by(key) %>% 
-  
-  mutate(index = round(100*value/value[1], 2)) %>% 
+tidydf <- tidydf |> group_by(name) |>
+  mutate(index = round(100*value/value[1], 2)) |> 
   ungroup()
 tidydf
 
-ggplot(tidydf, aes(time, index, col = key)) +
+ggplot(tidydf, aes(time, index, col = name)) +
   geom_line()
 ```
 
@@ -332,7 +348,7 @@ ggplot(df, aes(day, number)) +
 
 ```{r}
 # read file
-mydat <- read_csv("WA_Sales_Products_2012-14.csv") %>% 
+mydat <- read_csv("WA_Sales_Products_2012-14.csv") |> 
   mutate(Revenue = Revenue/1000000)
 
 # convert Quarter to a single numeric value Q
@@ -350,7 +366,7 @@ mydat$Date <- as.Date(paste0(mydat$Year, "-",
 
 
 ```{r}
-Methoddata <- mydat %>% group_by(Date, `Order method type`) %>%
+Methoddata <- mydat |> group_by(Date, `Order method type`) |>
     summarize(Revenue = sum(Revenue))
 
 g <- ggplot(Methoddata, aes(Date, Revenue,
@@ -370,7 +386,7 @@ g + geom_point()
 # Another example
 
 ```{r}
-No2013 <- Methoddata %>% filter(year(Date) != 2013)
+No2013 <- Methoddata |> filter(year(Date) != 2013)
 g <- ggplot(No2013, aes(Date, Revenue,
                             color = `Order method type`)) +
     geom_line(aes(group = `Order method type`)) +
