@@ -1,0 +1,299 @@
+---
+title: "Dates"
+execute:
+  echo: true
+  cache: false
+  message: false
+format: 
+  revealjs:
+    code-fold: false
+    width: 1152
+    height: 648
+    highlight-style: joyce.theme
+    theme: [simple, custom3.scss]
+    scrollable: true
+    slide-number: true
+    chalkboard: true
+    
+language: 
+  code-summary: ""
+
+knitr:
+  opts_chunk: 
+    out.width: 60%
+    fig.width: 6
+    fig.height: 4
+    fig.align: center
+
+editor: source
+---
+
+
+## The correct data format:  YYYY-MM-DD
+<hr>
+
+```{r, fig.width = 6, echo=FALSE}
+knitr::include_graphics("dateformattweet.png")
+```
+
+
+## Converting to `Date` class
+<hr>
+
+ You can convert character data to `Date` class with `as.Date()`:
+
+```{r}
+dchar <- "2025-10-21"
+ddate <- as.Date(dchar)
+```
+
+## Class
+<hr>
+
+```{r}
+dchar
+ddate
+```
+<br>  
+
+```{r}
+class(dchar)
+class(ddate)
+```
+
+## Specifying the format
+<hr>
+
+```{r}
+as.Date("Thursday, January 6, 2005", format = "%A, %B %d, %Y")
+```
+
+For a list of the conversion specifications available in R, see `?strptime`.
+
+
+## parse_date
+<hr>
+
+similar to `as.Date()`, more strict but some options aren't implemented
+
+
+```{r, error = TRUE}
+as.Date("1/12/2019", format="%m/%d/%y")
+readr::parse_date("1/12/2019", format="%m/%d/%y")
+```
+<br>
+
+```{r, error = TRUE}
+as.Date("Thursday, January 6, 2005", format = "%A, %B %d, %Y")
+readr::parse_date("Thursday, January 6, 2005", format = "%A, %B %d, %Y")
+```
+
+See `?parse_date`
+
+## Challenge
+<hr>
+
+```{r}
+#| cache: false
+#| echo: false
+library(lubridate)
+today <- Sys.Date()
+day <- weekdays(today)
+string <- paste0(day, ", ", month(today, label = TRUE), "-", mday(today), "-", year(today))
+# as.Date(string, format = "%A, %b-%d-%Y")
+```
+
+
+Convert **"`r string`**" to Date class using `as.Date()`
+
+## Solution
+
+```{r}
+as.Date(string, format = "%A, %b-%d-%Y")
+```
+
+
+## lubridate package
+<hr>
+
+The tidyverse **lubridate** makes it easy to convert dates that are not in standard format with `ymd()`, `ydm()`, `mdy()`, `myd()`, `dmy()`, and `dym()` (among many other useful date-time functions):
+
+```{r}
+lubridate::mdy("April 13, 1907")
+```
+
+
+
+## Working with `Date` Class
+<hr>
+
+It is well worth the effort to convert to `Date` class, because there's a lot you can do with dates in a `Date` class that you can't do if you store the dates as character data.
+
+Number of days between dates:
+
+```{r}
+as.Date("2017-11-02") - as.Date("2017-01-01")
+```
+
+## Compare dates
+<hr>
+
+```{r}
+as.Date("2017-11-12") > as.Date("2017-3-3")
+```
+
+Note that `Sys.Date()` returns today's date as a `Date` class:
+
+```{r}
+Sys.Date()
+class(Sys.Date())
+```
+
+## base R functions
+<hr>
+
+```{r}
+today <- Sys.Date()
+weekdays(today, abbreviate = TRUE)
+months(today, abbreviate = TRUE)
+quarters(today)
+```
+
+## lubridate functions
+<hr>
+
+The **lubridate** package provides additional functions to extract information from a date:
+
+```{r}
+today <- Sys.Date()
+lubridate::year(today)
+lubridate::yday(today)
+lubridate::month(today, label = TRUE)
+lubridate::week(today)
+```
+
+## Plotting with a `Date` class variable
+<hr>
+
+Both base R graphics and **ggplot2** "know" how to work with a `Date` class variable, and label the axes properly:
+
+```{r, out.width='50%'}
+df <- read.csv("historicalmortgage.csv")
+df$DATE <- as.Date(df$DATE)
+plot(df$DATE, df$X5.1.ARM, type = "l") # on the order of years
+```
+
+## base R
+<hr>
+
+```{r}
+plot(df$DATE[1:30], df$X5.1.ARM[1:30], type = "l") # switch to months
+```
+
+## ggplot2
+<hr>
+
+```{r, message=FALSE}
+# readr 
+library(tidyverse)
+```
+
+Note that unlike base R `read.csv()`, `readr::read_csv()` automatically reads DATE in as a `Date` class since it's in YYYY-MM-DD format:
+
+```{r, out.width='50%'}
+df <- readr::read_csv("historicalmortgage.csv")
+glimpse(df)
+```
+
+## ggplot2
+<hr>
+
+```{r}
+g <- ggplot(df, aes(DATE, `30 YR FIXED`)) + 
+  geom_line() + 
+  theme_grey(14)
+g
+```
+
+
+## ggplot2
+<hr>
+
+```{r}
+ggplot(df %>% filter(DATE < as.Date("2006-01-01")), 
+       aes(DATE, `30 YR FIXED`)) + 
+  geom_line() + 
+  theme_grey(14)
+
+```
+
+Again, when the data is filtered, the x-axis labels switch from years to months.
+
+## Limits
+<hr>
+
+We can control the x-axis breaks, limits, and labels with `scale_x_date()`:
+
+
+```{r, message = FALSE, warning=FALSE, out.width='50%'}
+library(lubridate)
+g + scale_x_date(limits = c(ymd("2008-01-01"), ymd("2008-12-31"))) +
+  labs(title = "limits = c(ymd(\"2008-01-01\"), ymd(\"2008-12-31\"))")
+```
+
+## Breaks
+<hr>
+
+```{r, out.width='50%'}
+g + scale_x_date(date_breaks = "4 years") +
+  labs(title = "scale_x_date(date_breaks = \"4 years\")")
+```
+
+## Labels
+<hr>
+
+```{r, out.width='50%'}
+g + scale_x_date(date_labels = "%Y-%m") +
+  labs(title = "scale_x_date(date_labels = \"%Y-%m\")")
+```
+
+(Remember `?parse_date` and `?strptime` for help.)
+
+## Annotations
+<hr>
+
+We can use `geom_vline()` with `annotate()` to mark specific events in a time series:
+
+```{r, warning=FALSE}
+#| echo: false
+ggplot(df, aes(DATE, `30 YR FIXED`)) + 
+  geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  annotate("text", x = ymd("2008-09-29"), y = 3.75, 
+           label = " Market crash\n 9/29/08", color = "blue", 
+           hjust = 0) +
+  scale_x_date(limits = c(ymd("2008-01-01"), ymd("2009-12-31")),
+               date_breaks = "1 year", 
+               date_labels = "%Y") + 
+  labs(title = "`geom_vline()` with `annotate()`") +
+  theme_grey(16)
+```
+
+
+## Code for previous graph
+<hr>
+
+```{r, warning=FALSE}
+#| echo: true
+ggplot(df, aes(DATE, `30 YR FIXED`)) + 
+  geom_line() +
+  geom_vline(xintercept = ymd("2008-09-29"), color = "blue") +
+  annotate("text", x = ymd("2008-09-29"), y = 3.75, 
+           label = " Market crash\n 9/29/08", color = "blue", 
+           hjust = 0) +
+  scale_x_date(limits = c(ymd("2008-01-01"), ymd("2009-12-31")),
+               date_breaks = "1 year", 
+               date_labels = "%Y") + 
+  labs(title = "`geom_vline()` with `annotate()`") +
+  theme_grey(16)
+```

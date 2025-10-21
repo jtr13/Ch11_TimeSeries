@@ -1,27 +1,41 @@
 ---
 title: "Time Series"
-output: 
-  slidy_presentation:
-    css: styles.css
-    fig_height: 4
-    fig_width: 6
-    df_print: kable
+execute:
+  echo: false
+  cache: true
+  message: false
+format: 
+  revealjs:
+    code-fold: false
+    width: 1152
+    height: 648
+    highlight-style: joyce.theme
+    theme: [simple, custom3.scss]
+    scrollable: true
+    slide-number: true
+    chalkboard: true
+    
+language: 
+  code-summary: ""
+
+knitr:
+  opts_chunk: 
+    out.width: 60%
+    fig.width: 6
+    fig.height: 4
+    fig.align: center
+
+editor: source
 ---
 
-# Time Series
-
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE,
-                      message = FALSE, cache = FALSE)
-```
-
-
-Chapter 11
+## Time Series
+<hr>
 
 Lines for time series, w/ time on the x-axis
 
-# Multiple time series
+## Multiple time series
+<hr>
+
 ```{r mortgagepres}
 # data from: https://www.freddiemac.com/pmms/docs/historicalweeklydata.xls
 library(tidyverse)
@@ -30,23 +44,25 @@ df <- df |>
   pivot_longer(cols = -DATE, names_to = "TYPE", values_to = "RATE") |> 
   mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE)) # puts legend in correct order
 
-ggplot(df, aes(DATE, RATE, group = TYPE)) +
+ggplot(df, aes(DATE, RATE, color = TYPE)) +
   geom_line() +
-  ggtitle("U.S. Mortgage Rates") +
-  labs (x = "", y = "percent") +
+  labs(title = "U.S. Mortgage Rates", x = "", y = "percent") +
   theme_grey(16) +
   theme(legend.title = element_blank())
 ```
 
 
-# 
+## No. 😭
+<hr>
+
 ```{r mortgage}
 ggplot(df, aes(DATE, RATE, fill = TYPE)) +
   geom_col() +
-  ggtitle("U.S. Mortgage Rates", subtitle = "Not recommended!")
+  labs(title = "U.S. Mortgage Rates")
 ```
 
-# Filter
+## Filter
+<hr>
 
 ```{r}
 library(lubridate)
@@ -54,21 +70,22 @@ df2020 <- df |>
   filter(year(DATE) == 2020)
 ggplot(df2020, aes(DATE, RATE, color = TYPE)) +
   geom_line() +
-  ggtitle("U.S. Mortgage Rates")
+  labs(title = "U.S. Mortgage Rates")
 ```
 
-# Overall long-term trend (secular)
+## Overall long-term trend (secular)
+<hr>
 
 ```{r}
 dfman <- read_csv("ManchesterByTheSea.csv")
 g <- ggplot(dfman, aes(Date, Gross)) +
   geom_line() +
-  ggtitle("Manchester by the Sea", "Daily Gross (US$), United States") +
-  xlab("2016-2017")
+  labs(title = "Manchester by the Sea", subtitle = "Daily Gross (US$), United States", x = "2016-2017")
 g
 ```
 
-# Loess smoother (non-parametric)
+## Loess smoother (non-parametric)
+<hr>
 
 ```{r loess}
 dfman$Group <- round(1:nrow(dfman)/(nrow(dfman)/5))
@@ -77,10 +94,11 @@ g <- ggplot(dfman, aes(Date, Gross)) +
 g +
   geom_line(color = "grey50") +
   geom_smooth(method = "loess", se = FALSE, lwd =1.5) +
-  ggtitle("Loess smoother")
+  labs(title = "Loess smoother")
 ```
 
-# Loess smoother (non-parametric)
+## Loess smoother (conceptual idea)
+<hr>
 
 ```{r}
 g +
@@ -89,37 +107,47 @@ g +
   geom_smooth(color = "blue", se = FALSE)
 ```
 
-# Under / overfitting
+## Under / overfitting
+<hr>
 
 <img src="loesscrop.png" width = "400" />
 
 
-# Default smoothing parameter  .75
+## Default smoothing parameter  .75
+<hr>
 
 ```{r}
-g + geom_smooth(method = "loess", span = .75, se = FALSE)
+#| echo: true
+g + geom_smooth(method = "loess", se = FALSE)
 ```
 
-# Change smoothing parameter  .1
+## Change smoothing parameter  .1
+<hr>
 
 ```{r}
+#| echo: true
 g + geom_smooth(method = "loess", span = .1, se = FALSE)
 ```
 
-# Change smoothing parameter  .5
+## Change smoothing parameter  .5
+<hr>
 
 ```{r}
+#| echo: true
 g + geom_smooth(method = "loess", span = .5, se = FALSE)
 ```
 
 
-# Change smoothing parameter  .9
+## Change smoothing parameter  .9
+<hr>
 
 ```{r}
+#| echo: true
 g + geom_smooth(method = "loess", span = .9, se = FALSE)
 ```
 
-#
+##
+
 ```{r, echo=FALSE}
 # with weekly summary
 weekly <- dfman |>
@@ -153,27 +181,29 @@ ggplot(dfman, aes(Date, Gross/1000000)) +
              xend = as.Date("2017-02-12"), y = 1.5,
              yend = 1.5, color = "deeppink", lwd = 1.5) +
     scale_x_date(date_labels = "%b\n%Y") +
-    ylab("Daily Box Office Gross \n (in millions US$)") +
-    xlab("") +
-    ggtitle("Manchester by the Sea",
-            "Daily Gross, United States") +
+    labs(title = "Manchester by the Sea",
+         subtitle = "Daily Gross, United States", 
+         x = NULL, 
+         y = ("Daily Box Office Gross \n (in millions US$)")) +
     theme_bw(16)
 ```
 
 
-# Cyclical trends
+## Cyclical trends
+<hr>
 
 ```{r}
 ggplot(dfman, aes(Date, Gross)) + geom_line()
 ```
 
-# Are there cyclical patterns?
+## Are there cyclical patterns?
+<hr>
 
 ```{r}
 ggplot(dfman, aes(Date, Gross)) + geom_line() + geom_point()
 ```
 
-#
+##
 
 ```{r}
 library(plotly)
@@ -188,19 +218,21 @@ p <- plot_ly(
 p
 ```
 
-# Mark the pattern
+## Mark the pattern
+<hr>
 
 ```{r}
 g <- ggplot(dfman, aes(Date, Gross)) + geom_line() +
-    ggtitle("Manchester by the Sea",
-            "Daily Gross, United States")
+    labs(title = "Manchester by the Sea",
+         subtitle = "Daily Gross, United States")
 saturday <- dfman |> filter(wday(Date) == 7)
 g + geom_point(data = saturday, aes(Date, Gross),
                color = "deeppink")
 ```
 
 
-# Facet to test (remove) cyclical pattern
+## Facet to test (remove) cyclical pattern
+<hr>
 
 ```{r, fig.height = 6}
 # facets
@@ -209,7 +241,8 @@ ggplot(dfman, aes(Date, Gross)) +
     facet_grid(wday(Date, label = TRUE)~.)
 ```
 
-# Another view
+## Another view
+<hr>
 
 ```{r facetbyday}
 ggplot(dfman, aes(Date, Gross)) +
@@ -217,7 +250,8 @@ ggplot(dfman, aes(Date, Gross)) +
     facet_grid(.~wday(Date, label = TRUE))
 ```
 
-# With smoother
+## With smoother
+<hr>
 
 ```{r facetbydaysmooth}
 ggplot(dfman, aes(Date, Gross)) +
@@ -226,21 +260,10 @@ ggplot(dfman, aes(Date, Gross)) +
     geom_smooth(se = FALSE)
 ```
 
-# Air Passengers
+## What about the abnormalities?
+<hr>
 
-```{r, echo = TRUE}
-plot(AirPassengers)
-```
-
-# `monthplot()`
-```{r, echo = TRUE}
-monthplot(AirPassengers)
-```
-
-
-# What about the abnormalities?
-
-## Label by day of week
+Label by day of week
 
 ```{r christmas}
 christmas <- dfman |>
@@ -254,9 +277,10 @@ ggplot(christmas, aes(Date, Gross)) +
                  date_breaks = "1 day")
 ```
 
-# Different pattern for Christmas Week
+## Different pattern for Christmas Week
+<hr>
 
-## Label by day of month
+Label by day of month
 
 ```{r christmas2}
 ggplot(christmas, aes(Date, Gross/1000000)) +
@@ -267,15 +291,16 @@ ggplot(christmas, aes(Date, Gross/1000000)) +
                    label = day(Date))) +
     scale_x_date(date_labels = "%a",
                  date_breaks = "1 day") +
-    ggtitle("Manchester by the Sea",
-            "Chistmas Week Box Office Gross") +
-    labs(x = "Dec 2016 - Jan 2017", 
+    labs(title = "Manchester by the Sea", 
+         subtitle = "Christmas Week Box Office Gross",
+         x = "Dec 2016 - Jan 2017", 
          y = "Daily Gross (in millions $US)") +
     theme_grey(14)
 ```
 
 
-# Highlight the abnormality
+## Highlight the abnormality
+<hr>
 
 ```{r}
 # annotate Christmas Week
@@ -291,7 +316,8 @@ g + annotate("rect", xmin = start, xmax = end,
 
 ```
 
-# Comparisons (multi-line plots)
+## Comparisons (multi-line plots)
+<hr>
 
 ```{r}
 set.seed(5702)
@@ -302,22 +328,42 @@ ggplot(tidydf, aes(time, value, col = name)) +
   geom_line()
 ```
 
-# Scale the data (create an index)
+## Scale the data (create an index)
+<hr>
 
-Each value is divided by the first value for that group and multiplied by 100:
+In each group divide by first value, mult by 100
+
 
 ```{r}
-tidydf
-tidydf <- tidydf |> group_by(name) |>
+#| layout-ncol: 2
+#| echo: true
+head(tidydf, 8)
+tidydf_scaled <- tidydf |> group_by(name) |>
   mutate(index = round(100*value/value[1], 2)) |> 
   ungroup()
-tidydf
-
-ggplot(tidydf, aes(time, index, col = name)) +
-  geom_line()
+head(tidydf_scaled, 8)
 ```
 
-# Discrete data
+
+## Comparisons (multi-line plots)
+<hr>
+
+```{r}
+#| layout-ncol: 2
+ggplot(tidydf, aes(time, value, col = name)) +
+  geom_line() +
+  labs(title = "Original data") +
+  theme_grey(18)
+
+ggplot(tidydf_scaled, aes(time, index, col = name)) +
+  geom_line() +
+  labs(title = "Scaled data") +
+  theme_grey(18)
+```
+
+## Discrete data
+<hr>
+
 ```{r inspection}
 set.seed(5702)
 day <- 1:31
@@ -328,23 +374,26 @@ ggplot(df, aes(day, number)) +
   geom_point(color = "deeppink") +
   scale_x_continuous(breaks = 1:31) +
   scale_y_continuous(limits = c(0, 5000)) +
-  ggtitle("Average Motor Vehicle Inspections per Day",
-          subtitle = "(fake data)") +
-  labs(x = "day of month", y="number of inspections") +
+  labs(title = "Average Motor Vehicle Inspections per Day",
+          subtitle = "(fake data)",
+       x = "day of month", y = "number of inspections") +
   theme(plot.title = element_text(size = 16))
 ```
 
-# Better for individual values
+## Better for individual values
+<hr>
+
 ```{r}
 ggplot(df, aes(day, number)) +
   geom_col() +
   scale_x_continuous(breaks = 1:31) +
-  ggtitle("Average Motor Vehicle Inspections per Day") +
-  labs(x = "day of month", y="number of inspections") +
+  labs(title = "Average Motor Vehicle Inspections per Day",
+       x = "day of month", y = "number of inspections") +
   theme(plot.title = element_text(size = 16))
 ```
 
-# Gaps
+## Gaps
+<hr>
 
 ```{r}
 # read file
@@ -378,12 +427,15 @@ g <- ggplot(Methoddata, aes(Date, Revenue,
 g
 ```
 
-# Add points to show the frequency of the data
+## Add points to show the frequency of the data
+<hr>
+
 ```{r}
 g + geom_point()
 ```
 
-# Another example
+## Another example
+<hr>
 
 ```{r}
 No2013 <- Methoddata |> filter(year(Date) != 2013)
@@ -396,13 +448,15 @@ g <- ggplot(No2013, aes(Date, Revenue,
 g
 ```
 
-# Add points to show the frequency of the data
+## Add points to show the frequency of the data
+<hr>
 
 ```{r}
 g + geom_point()
 ```
 
-# Another option: leave gaps
+## Another option: leave gaps
+<hr>
 
 (set missing values to NA)
 
