@@ -1,11 +1,11 @@
 - I. Introduction
 - II. History
 - III. Categorization by theory - in grammar
-- Get started: how a ggplot2 plot is built from inside
-- Extensions by components
-    - `Stat`
-    - `Geom`
-    - `Scale` and `Guide`
-    - `Facet`
-    - `Coordinate`
+    - Get started: how a ggplot2 plot is built from inside
+    - Extensions by components
+        - `Stat`
+        - `Geom`
+        - `Scale` and `Guide`
+        - `Facet`
+        - `Coordinate`
 - IV. References {.unnumbered}
