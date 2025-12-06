@@ -1,6 +1,6 @@
-I. Introduction
-II. History
-III. Categorization by theory - in grammar
+- I. Introduction
+- II. History
+- III. Categorization by theory - in grammar
 - Get started: how a ggplot2 plot is built from inside
 - Extensions by components
     - `Stat`
@@ -8,4 +8,4 @@ III. Categorization by theory - in grammar
     - `Scale` and `Guide`
     - `Facet`
     - `Coordinate`
-IV. References {.unnumbered}
+- IV. References {.unnumbered}
