@@ -205,7 +205,7 @@
 <h2>The correct data format: YYYY-MM-DD</h2>
 <hr>
 
-<img data-src="dateformattweet.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="dateformattweet.png" class="quarto-figure quarto-figure-center r-stretch" width="628"></section>
 <section id="converting-to-date-class" class="slide level2">
 <h2>Converting to <code>Date</code> class</h2>
 <hr>
@@ -228,13 +228,27 @@
 <pre><code>[1] "2025-10-21"</code></pre>
 </div>
 </div>
+</section>
+<section id="class-1" class="slide level2">
+<h2>Class</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>dchar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2025-10-21"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>ddate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2025-10-21"</code></pre>
+</div>
+</div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">class</span>(dchar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">class</span>(dchar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "character"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">class</span>(ddate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">class</span>(ddate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Date"</code></pre>
 </div>
@@ -244,7 +258,7 @@
 <h2>Specifying the format</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2005-01-06"</code></pre>
 </div>
@@ -254,24 +268,39 @@
 <section id="parse_date" class="slide level2">
 <h2>parse_date</h2>
 <hr>
-<p>similar to <code>as.Date()</code>, more strict but some options aren’t implemented</p>
+<p>similar to <code>as.Date()</code>, but more strict &amp; some options aren’t implemented</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2020-01-12"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>readr<span class="sc">::</span><span class="fu">parse_date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>readr<span class="sc">::</span><span class="fu">parse_date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+</section>
+<section id="parse_date-1" class="slide level2">
+<h2>parse_date</h2>
+<hr>
+<p>similar to <code>as.Date()</code>, but more strict &amp; some options aren’t implemented</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2020-01-12"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>readr<span class="sc">::</span><span class="fu">parse_date</span>(<span class="st">"1/12/2019"</span>, <span class="at">format=</span><span class="st">"%m/%d/%y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] NA</code></pre>
 </div>
 </div>
 <p><br></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2005-01-06"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>readr<span class="sc">::</span><span class="fu">parse_date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>readr<span class="sc">::</span><span class="fu">parse_date</span>(<span class="st">"Thursday, January 6, 2005"</span>, <span class="at">format =</span> <span class="st">"%A, %B %d, %Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error: Invalid %A auto parser</code></pre>
 </div>
@@ -286,7 +315,7 @@
 <section id="solution" class="slide level2">
 <h2>Solution</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">as.Date</span>(string, <span class="at">format =</span> <span class="st">"%A, %b-%d-%Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">as.Date</span>(string, <span class="at">format =</span> <span class="st">"%A, %b-%d-%Y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2025-10-21"</code></pre>
 </div>
@@ -297,7 +326,7 @@
 <hr>
 <p>The tidyverse <strong>lubridate</strong> makes it easy to convert dates that are not in standard format with <code>ymd()</code>, <code>ydm()</code>, <code>mdy()</code>, <code>myd()</code>, <code>dmy()</code>, and <code>dym()</code> (among many other useful date-time functions):</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">mdy</span>(<span class="st">"April 13, 1907"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">mdy</span>(<span class="st">"April 13, 1907"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "1907-04-13"</code></pre>
 </div>
@@ -309,7 +338,7 @@
 <p>It is well worth the effort to convert to <code>Date</code> class, because there’s a lot you can do with dates in a <code>Date</code> class that you can’t do if you store the dates as character data.</p>
 <p>Number of days between dates:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"2017-11-02"</span>) <span class="sc">-</span> <span class="fu">as.Date</span>(<span class="st">"2017-01-01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"2017-11-02"</span>) <span class="sc">-</span> <span class="fu">as.Date</span>(<span class="st">"2017-01-01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Time difference of 305 days</code></pre>
 </div>
@@ -319,18 +348,18 @@
 <h2>Compare dates</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"2017-11-12"</span>) <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-3-3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a><span class="fu">as.Date</span>(<span class="st">"2017-11-12"</span>) <span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2017-3-3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 <p>Note that <code>Sys.Date()</code> returns today’s date as a <code>Date</code> class:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="fu">Sys.Date</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">Sys.Date</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "2025-10-21"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="fu">class</span>(<span class="fu">Sys.Date</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">class</span>(<span class="fu">Sys.Date</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Date"</code></pre>
 </div>
@@ -340,16 +369,16 @@
 <h2>base R functions</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>today <span class="ot">&lt;-</span> <span class="fu">Sys.Date</span>()</span>
-<span id="cb32-2"><a href=""></a><span class="fu">weekdays</span>(today, <span class="at">abbreviate =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>today <span class="ot">&lt;-</span> <span class="fu">Sys.Date</span>()</span>
+<span id="cb40-2"><a href=""></a><span class="fu">weekdays</span>(today, <span class="at">abbreviate =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Tue"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a><span class="fu">months</span>(today, <span class="at">abbreviate =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="fu">months</span>(today, <span class="at">abbreviate =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Oct"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">quarters</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">quarters</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Q4"</code></pre>
 </div>
@@ -360,21 +389,21 @@
 <hr>
 <p>The <strong>lubridate</strong> package provides additional functions to extract information from a date:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>today <span class="ot">&lt;-</span> <span class="fu">Sys.Date</span>()</span>
-<span id="cb38-2"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">year</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>today <span class="ot">&lt;-</span> <span class="fu">Sys.Date</span>()</span>
+<span id="cb46-2"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">year</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2025</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">yday</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">yday</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 294</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">month</span>(today, <span class="at">label =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">month</span>(today, <span class="at">label =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] Oct
 12 Levels: Jan &lt; Feb &lt; Mar &lt; Apr &lt; May &lt; Jun &lt; Jul &lt; Aug &lt; Sep &lt; ... &lt; Dec</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">week</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>lubridate<span class="sc">::</span><span class="fu">week</span>(today)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 42</code></pre>
 </div>
@@ -385,31 +414,43 @@
 <hr>
 <p>Both base R graphics and <strong>ggplot2</strong> “know” how to work with a <code>Date</code> class variable, and label the axes properly:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"historicalmortgage.csv"</span>)</span>
-<span id="cb46-2"><a href=""></a>df<span class="sc">$</span>DATE <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(df<span class="sc">$</span>DATE)</span>
-<span id="cb46-3"><a href=""></a><span class="fu">plot</span>(df<span class="sc">$</span>DATE, df<span class="sc">$</span>X5.<span class="fl">1.</span>ARM, <span class="at">type =</span> <span class="st">"l"</span>) <span class="co"># on the order of years</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"historicalmortgage.csv"</span>)</span>
+<span id="cb54-2"><a href=""></a>df<span class="sc">$</span>DATE <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(df<span class="sc">$</span>DATE)</span>
+<span id="cb54-3"><a href=""></a><span class="fu">plot</span>(df<span class="sc">$</span>DATE, df<span class="sc">$</span>X5.<span class="fl">1.</span>ARM, <span class="at">type =</span> <span class="st">"l"</span>) <span class="co"># on the order of years</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="base-r" class="slide level2">
 <h2>base R</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">plot</span>(df<span class="sc">$</span>DATE[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>], df<span class="sc">$</span>X5.<span class="fl">1.</span>ARM[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>], <span class="at">type =</span> <span class="st">"l"</span>) <span class="co"># switch to months</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a><span class="fu">plot</span>(df<span class="sc">$</span>DATE[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>], df<span class="sc">$</span>X5.<span class="fl">1.</span>ARM[<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>], <span class="at">type =</span> <span class="st">"l"</span>) <span class="co"># switch to months</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="ggplot2" class="slide level2">
 <h2>ggplot2</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a><span class="co"># readr </span></span>
-<span id="cb48-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a><span class="co"># readr </span></span>
+<span id="cb56-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Note that unlike base R <code>read.csv()</code>, <code>readr::read_csv()</code> automatically reads DATE in as a <code>Date</code> class since it’s in YYYY-MM-DD format:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>df <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"historicalmortgage.csv"</span>)</span>
-<span id="cb49-2"><a href=""></a><span class="fu">glimpse</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href=""></a>df <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"historicalmortgage.csv"</span>)</span>
+<span id="cb57-2"><a href=""></a><span class="fu">glimpse</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 887
 Columns: 4
@@ -424,80 +465,98 @@ $ `5/1 ARM`     &lt;dbl&gt; 5.03, 5.05, 5.05, 5.02, 5.00, 4.99, 5.05, 5.05, 5.17
 <h2>ggplot2</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb51-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb51-3"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">14</span>)</span>
-<span id="cb51-4"><a href=""></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href=""></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb59-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb59-3"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">14</span>)</span>
+<span id="cb59-4"><a href=""></a>g</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="ggplot2-2" class="slide level2">
 <h2>ggplot2</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a><span class="fu">ggplot</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(DATE <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2006-01-01"</span>)), </span>
-<span id="cb52-2"><a href=""></a>       <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb52-3"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb52-4"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a><span class="fu">ggplot</span>(df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(DATE <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2006-01-01"</span>)), </span>
+<span id="cb60-2"><a href=""></a>       <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb60-3"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb60-4"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"><p>Again, when the data is filtered, the x-axis labels switch from years to months.</p>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><p>x-axis labels switch from years to months after filtering</p>
 </section>
 <section id="limits" class="slide level2">
 <h2>Limits</h2>
 <hr>
 <p>We can control the x-axis breaks, limits, and labels with <code>scale_x_date()</code>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb53-2"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">ymd</span>(<span class="st">"2008-01-01"</span>), <span class="fu">ymd</span>(<span class="st">"2008-12-31"</span>))) <span class="sc">+</span></span>
-<span id="cb53-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"limits = c(ymd(</span><span class="sc">\"</span><span class="st">2008-01-01</span><span class="sc">\"</span><span class="st">), ymd(</span><span class="sc">\"</span><span class="st">2008-12-31</span><span class="sc">\"</span><span class="st">))"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb61-2"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">ymd</span>(<span class="st">"2008-01-01"</span>), <span class="fu">ymd</span>(<span class="st">"2008-12-31"</span>))) <span class="sc">+</span></span>
+<span id="cb61-3"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"limits = c(ymd(</span><span class="sc">\"</span><span class="st">2008-01-01</span><span class="sc">\"</span><span class="st">), ymd(</span><span class="sc">\"</span><span class="st">2008-12-31</span><span class="sc">\"</span><span class="st">))"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="breaks" class="slide level2">
 <h2>Breaks</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"4 years"</span>) <span class="sc">+</span></span>
-<span id="cb54-2"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scale_x_date(date_breaks = </span><span class="sc">\"</span><span class="st">4 years</span><span class="sc">\"</span><span class="st">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"4 years"</span>) <span class="sc">+</span></span>
+<span id="cb62-2"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scale_x_date(date_breaks = </span><span class="sc">\"</span><span class="st">4 years</span><span class="sc">\"</span><span class="st">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="labels" class="slide level2">
 <h2>Labels</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%Y-%m"</span>) <span class="sc">+</span></span>
-<span id="cb55-2"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scale_x_date(date_labels = </span><span class="sc">\"</span><span class="st">%Y-%m</span><span class="sc">\"</span><span class="st">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%Y-%m"</span>) <span class="sc">+</span></span>
+<span id="cb63-2"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"scale_x_date(date_labels = </span><span class="sc">\"</span><span class="st">%Y-%m</span><span class="sc">\"</span><span class="st">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:50.0%"><p>(Remember <code>?parse_date</code> and <code>?strptime</code> for help.)</p>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"><p>(Remember <code>?parse_date</code> and <code>?strptime</code> for help.)</p>
 </section>
 <section id="annotations" class="slide level2">
 <h2>Annotations</h2>
 <hr>
 <p>We can use <code>geom_vline()</code> with <code>annotate()</code> to mark specific events in a time series:</p>
 
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
 <section id="code-for-previous-graph" class="slide level2">
 <h2>Code for previous graph</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
-<span id="cb56-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb56-3"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">ymd</span>(<span class="st">"2008-09-29"</span>), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
-<span id="cb56-4"><a href=""></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">ymd</span>(<span class="st">"2008-09-29"</span>), <span class="at">y =</span> <span class="fl">3.75</span>, </span>
-<span id="cb56-5"><a href=""></a>           <span class="at">label =</span> <span class="st">" Market crash</span><span class="sc">\n</span><span class="st"> 9/29/08"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, </span>
-<span id="cb56-6"><a href=""></a>           <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb56-7"><a href=""></a>  <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">ymd</span>(<span class="st">"2008-01-01"</span>), <span class="fu">ymd</span>(<span class="st">"2009-12-31"</span>)),</span>
-<span id="cb56-8"><a href=""></a>               <span class="at">date_breaks =</span> <span class="st">"1 year"</span>, </span>
-<span id="cb56-9"><a href=""></a>               <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span> </span>
-<span id="cb56-10"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"`geom_vline()` with `annotate()`"</span>) <span class="sc">+</span></span>
-<span id="cb56-11"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary></summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href=""></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, <span class="st">`</span><span class="at">30 YR FIXED</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb64-2"><a href=""></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb64-3"><a href=""></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">ymd</span>(<span class="st">"2008-09-29"</span>), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb64-4"><a href=""></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">ymd</span>(<span class="st">"2008-09-29"</span>), <span class="at">y =</span> <span class="fl">3.75</span>, </span>
+<span id="cb64-5"><a href=""></a>           <span class="at">label =</span> <span class="st">" Market crash</span><span class="sc">\n</span><span class="st"> 9/29/08"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, </span>
+<span id="cb64-6"><a href=""></a>           <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb64-7"><a href=""></a>  <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">ymd</span>(<span class="st">"2008-01-01"</span>), <span class="fu">ymd</span>(<span class="st">"2009-12-31"</span>)),</span>
+<span id="cb64-8"><a href=""></a>               <span class="at">date_breaks =</span> <span class="st">"1 year"</span>, </span>
+<span id="cb64-9"><a href=""></a>               <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span> </span>
+<span id="cb64-10"><a href=""></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"`geom_vline()` with `annotate()`"</span>) <span class="sc">+</span></span>
+<span id="cb64-11"><a href=""></a>  <span class="fu">theme_grey</span>(<span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 
 </div>
 
-<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="Dates_2025_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center r-stretch" width="576"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

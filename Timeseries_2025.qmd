@@ -1,8 +1,8 @@
 ---
 title: "Time Series"
 execute:
-  echo: false
-  cache: true
+  echo: true
+  cache: false
   message: false
 format: 
   revealjs:
@@ -21,8 +21,8 @@ language:
 knitr:
   opts_chunk: 
     out.width: 60%
-    fig.width: 6
-    fig.height: 4
+    fig.width: 7
+    fig.height: 5
     fig.align: center
 
 editor: source
@@ -33,13 +33,21 @@ editor: source
 
 Lines for time series, w/ time on the x-axis
 
+Look for:
+
+trends, seasonal patterns, cyclical patterns, noise
+
+missing values, outliers, sudden changes
+
 ## Multiple time series
 <hr>
 
 ```{r mortgagepres}
-# data from: https://www.freddiemac.com/pmms/docs/historicalweeklydata.xls
+# data from https://www.freddiemac.com/pmms (Download .xlsx file)
 library(tidyverse)
-df <- read_csv("historicalmortgage.csv")
+library(readxl)
+theme_set(theme_linedraw(16))
+df <- read_xlsx("historicalweeklydata.xlsx") 
 df <- df |> 
   pivot_longer(cols = -DATE, names_to = "TYPE", values_to = "RATE") |> 
   mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE)) # puts legend in correct order
@@ -47,7 +55,6 @@ df <- df |>
 ggplot(df, aes(DATE, RATE, color = TYPE)) +
   geom_line() +
   labs(title = "U.S. Mortgage Rates", x = "", y = "percent") +
-  theme_grey(16) +
   theme(legend.title = element_blank())
 ```
 
@@ -56,6 +63,8 @@ ggplot(df, aes(DATE, RATE, color = TYPE)) +
 <hr>
 
 ```{r mortgage}
+#| fig-width: 6
+#| fig-height: 4
 ggplot(df, aes(DATE, RATE, fill = TYPE)) +
   geom_col() +
   labs(title = "U.S. Mortgage Rates")
@@ -73,7 +82,7 @@ ggplot(df2020, aes(DATE, RATE, color = TYPE)) +
   labs(title = "U.S. Mortgage Rates")
 ```
 
-## Overall long-term trend (secular)
+## What is the overall long-term trend (secular)?
 <hr>
 
 ```{r}
@@ -88,12 +97,12 @@ g
 <hr>
 
 ```{r loess}
-dfman$Group <- round(1:nrow(dfman)/(nrow(dfman)/5))
+dfman$Group <- round(1:nrow(dfman)/(nrow(dfman)/6))
 g <- ggplot(dfman, aes(Date, Gross)) +
   geom_point()
 g +
   geom_line(color = "grey50") +
-  geom_smooth(method = "loess", se = FALSE, lwd =1.5) +
+  geom_smooth(method = "loess", se = FALSE, lwd =1.5, span = .5) +
   labs(title = "Loess smoother")
 ```
 
@@ -103,8 +112,7 @@ g +
 ```{r}
 g +
   geom_line(color = "grey50") +
-  geom_smooth(aes(group = Group), method = 'lm', color = "red", se = FALSE) + 
-  geom_smooth(color = "blue", se = FALSE)
+  geom_smooth(aes(group = Group), method = 'lm', color = "red", se = FALSE)
 ```
 
 ## Under / overfitting
@@ -184,19 +192,18 @@ ggplot(dfman, aes(Date, Gross/1000000)) +
     labs(title = "Manchester by the Sea",
          subtitle = "Daily Gross, United States", 
          x = NULL, 
-         y = ("Daily Box Office Gross \n (in millions US$)")) +
-    theme_bw(16)
+         y = ("Daily Box Office Gross \n (in millions US$)"))
 ```
 
 
-## Cyclical trends
+## Seasonal trends
 <hr>
 
 ```{r}
 ggplot(dfman, aes(Date, Gross)) + geom_line()
 ```
 
-## Are there cyclical patterns?
+## Are there seasonal patterns?
 <hr>
 
 ```{r}
@@ -231,7 +238,7 @@ g + geom_point(data = saturday, aes(Date, Gross),
 ```
 
 
-## Facet to test (remove) cyclical pattern
+## Facet to test (remove) seasonal pattern
 <hr>
 
 ```{r, fig.height = 6}
@@ -245,20 +252,117 @@ ggplot(dfman, aes(Date, Gross)) +
 <hr>
 
 ```{r facetbyday}
+#| fig-width: 9
 ggplot(dfman, aes(Date, Gross)) +
     geom_line(color = "grey30") + geom_point(size = 1) +
-    facet_grid(.~wday(Date, label = TRUE))
+    facet_grid(.~wday(Date, label = TRUE)) +
+    theme_linedraw()
 ```
 
 ## With smoother
 <hr>
 
 ```{r facetbydaysmooth}
+#| fig-width: 9
 ggplot(dfman, aes(Date, Gross)) +
     geom_line(color = "grey30") + geom_point(size = 1) +
     facet_grid(.~wday(Date, label = TRUE)) +
-    geom_smooth(se = FALSE)
+    geom_smooth(se = FALSE) +
+    theme_linedraw()
 ```
+
+## Cyclical or seasonal?
+<hr>
+
+```{r}
+data("economics", package = "ggplot2")
+
+# Focus on unemployment rate
+econ <- economics |>
+  select(date, unemploy, pop) |>
+  mutate(unemploy_rate = unemploy / pop * 100)
+
+econplot <- econ |>
+  ggplot(aes(x = date, y = unemploy_rate)) +
+  geom_line() +
+  labs(
+    title = "U.S. Unemployment Rate",
+    x = "Date",
+    y = "Percent Unemployed"
+  )
+econplot
+```
+
+## Trend
+
+```{r}
+econplot + geom_smooth(aes(color = "Loess, span = .75"), span = .75, se = FALSE) + # used above
+  labs(title = "U.S. Unemployment Rate") +
+  scale_color_manual(name = "Smoother", values = c("blue")) + 
+  theme(legend.position = "top")
+```
+
+
+## Trend and cyclical components
+<hr>
+
+```{r}
+econ_trend <- econ |>
+  mutate(trend = predict(loess(unemploy_rate ~ as.numeric(date),
+                               data = df)))
+
+econ_cycle <- econ_trend |>
+  mutate(cycle = unemploy_rate - trend)
+
+econ_cycle |>
+  pivot_longer(c(unemploy_rate, trend, cycle),
+               names_to = "component", values_to = "value") |>
+  ggplot(aes(x = date, y = value)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~fct_rev(component), ncol = 1) +
+  labs(
+    title = "Unemployment Rate: Trend and Cyclical Components",
+    x = "Date", y = "Percent"
+  ) +
+  theme(legend.position = "none")
+```
+
+## What's wrong?
+<hr>
+
+```{r}
+econ_trend <- econ |>
+  mutate(trend = predict(loess(unemploy_rate ~ as.numeric(date),
+                               span = .2, data = df)))
+
+econ_cycle <- econ_trend |>
+  mutate(cycle = unemploy_rate - trend)
+
+econ_cycle |>
+  pivot_longer(c(unemploy_rate, trend, cycle),
+               names_to = "component", values_to = "value") |>
+  ggplot(aes(x = date, y = value)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~fct_rev(component), ncol = 1) +
+  labs(
+    title = "Unemployment Rate: Trend and Cyclical Components",
+    x = "Date", y = "Percent"
+  ) +
+  theme(legend.position = "none")
+```
+
+## What's wrong?
+<hr>
+
+```{r}
+econplot + geom_smooth(aes(color = "Loess, span = .2"), span = .2, se = FALSE) + # used above
+  labs(title = "U.S. Unemployment Rate") +
+  scale_color_manual(name = "Smoother", values = c("blue")) +
+  theme(legend.position = "top")
+  
+```
+
+
 
 ## What about the abnormalities?
 <hr>
@@ -294,8 +398,7 @@ ggplot(christmas, aes(Date, Gross/1000000)) +
     labs(title = "Manchester by the Sea", 
          subtitle = "Christmas Week Box Office Gross",
          x = "Dec 2016 - Jan 2017", 
-         y = "Daily Gross (in millions $US)") +
-    theme_grey(14)
+         y = "Daily Gross (in millions $US)")
 ```
 
 
@@ -311,8 +414,7 @@ g + annotate("rect", xmin = start, xmax = end,
              alpha = .2) +
     annotate("text", x = end + 2,
              y = 1500000, label = "Dec 24 - Jan 2",
-             color = "green", hjust = 0) +
-    theme_classic()
+             color = "green", hjust = 0)
 
 ```
 
@@ -352,13 +454,11 @@ head(tidydf_scaled, 8)
 #| layout-ncol: 2
 ggplot(tidydf, aes(time, value, col = name)) +
   geom_line() +
-  labs(title = "Original data") +
-  theme_grey(18)
+  labs(title = "Original data")
 
 ggplot(tidydf_scaled, aes(time, index, col = name)) +
   geom_line() +
-  labs(title = "Scaled data") +
-  theme_grey(18)
+  labs(title = "Scaled data")
 ```
 
 ## Discrete data
@@ -431,6 +531,7 @@ g
 <hr>
 
 ```{r}
+#| fig-width: 10
 g + geom_point()
 ```
 

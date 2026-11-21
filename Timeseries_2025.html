@@ -6,8 +6,8 @@
 <script src="Timeseries_2025_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="Timeseries_2025_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="Timeseries_2025_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Timeseries_2025_files/libs/quarto-html/quarto-syntax-highlighting-d4ade3f9ee3d2992287bc0b61061ada2.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="Timeseries_2025_files/libs/quarto-html/quarto-syntax-highlighting-fc5da1974d3139c5f84de457da78e151.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
 
   <title>Time Series</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,10 +16,16 @@
   <link rel="stylesheet" href="Timeseries_2025_files/libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="Timeseries_2025_files/libs/revealjs/dist/reveal.css">
   <style>
-    code{white-space: pre-wrap;}
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
@@ -94,7 +100,7 @@
     code span.vs { color: #ea0404; } /* VerbatimString */
     code span.wa { color: #d2d2d2; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Timeseries_2025_files/libs/revealjs/dist/theme/quarto-45c6e814c4141ab674a8c18b038eb0d7.css">
+  <link rel="stylesheet" href="Timeseries_2025_files/libs/revealjs/dist/theme/quarto-9010dcdbee2e34577b69fd1dc6734aaf.css">
   <link href="Timeseries_2025_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="Timeseries_2025_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="Timeseries_2025_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -189,15 +195,15 @@
       margin-right: 0; 
     }
   </style>
-  <link href="Timeseries_2025_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <link href="Timeseries_2025_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
   <script src="Timeseries_2025_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-  <script src="Timeseries_2025_files/libs/plotly-binding-4.11.0/plotly.js"></script>
+  <script src="Timeseries_2025_files/libs/plotly-binding-4.12.1/plotly.js"></script>
   <script src="Timeseries_2025_files/libs/typedarray-0.1/typedarray.min.js"></script>
   <script src="Timeseries_2025_files/libs/jquery-3.5.1/jquery.min.js"></script>
   <link href="Timeseries_2025_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
   <script src="Timeseries_2025_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
-  <link href="Timeseries_2025_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
-  <script src="Timeseries_2025_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+  <link href="Timeseries_2025_files/libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="Timeseries_2025_files/libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -214,36 +220,87 @@
 <h2>Time Series</h2>
 <hr>
 <p>Lines for time series, w/ time on the x-axis</p>
+<p>Look for:</p>
+<p>trends, seasonal patterns, cyclical patterns, noise</p>
+<p>missing values, outliers, sudden changes</p>
 </section>
 <section id="multiple-time-series" class="slide level2">
 <h2>Multiple time series</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-label="1"></a><span class="co"># data from: https://www.freddiemac.com/pmms/docs/historicalweeklydata.xls</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="" aria-label="3"></a><span class="fu">theme_set</span>(<span class="fu">theme_linedraw</span>(<span class="dv">16</span>))</span>
+<span id="cb1-4"><a href="" aria-label="4"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"historicalmortgage.csv"</span>)</span>
+<span id="cb1-5"><a href="" aria-label="5"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="" aria-label="6"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>DATE, <span class="at">names_to =</span> <span class="st">"TYPE"</span>, <span class="at">values_to =</span> <span class="st">"RATE"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="" aria-label="7"></a>  <span class="fu">mutate</span>(<span class="at">TYPE =</span> forcats<span class="sc">::</span><span class="fu">fct_reorder2</span>(TYPE, DATE, RATE)) <span class="co"># puts legend in correct order</span></span>
+<span id="cb1-8"><a href="" aria-label="8"></a></span>
+<span id="cb1-9"><a href="" aria-label="9"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, RATE, <span class="at">color =</span> TYPE)) <span class="sc">+</span></span>
+<span id="cb1-10"><a href="" aria-label="10"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-11"><a href="" aria-label="11"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"U.S. Mortgage Rates"</span>, <span class="at">x =</span> <span class="st">""</span>, <span class="at">y =</span> <span class="st">"percent"</span>) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="" aria-label="12"></a>  <span class="fu">theme</span>(<span class="at">legend.title =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/mortgagepres-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="no." class="slide level2">
 <h2>No.&nbsp;😭</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(DATE, RATE, <span class="at">fill =</span> TYPE)) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="" aria-label="2"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb2-3"><a href="" aria-label="3"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"U.S. Mortgage Rates"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/mortgage-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="filter" class="slide level2">
 <h2>Filter</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-label="1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb3-2"><a href="" aria-label="2"></a>df2020 <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="" aria-label="3"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(DATE) <span class="sc">==</span> <span class="dv">2020</span>)</span>
+<span id="cb3-4"><a href="" aria-label="4"></a><span class="fu">ggplot</span>(df2020, <span class="fu">aes</span>(DATE, RATE, <span class="at">color =</span> TYPE)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="" aria-label="5"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb3-6"><a href="" aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"U.S. Mortgage Rates"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="overall-long-term-trend-secular" class="slide level2">
-<h2>Overall long-term trend (secular)</h2>
+<section id="what-is-the-overall-long-term-trend-secular" class="slide level2">
+<h2>What is the overall long-term trend (secular)?</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-label="1"></a>dfman <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"ManchesterByTheSea.csv"</span>)</span>
+<span id="cb4-2"><a href="" aria-label="2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="" aria-label="3"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb4-4"><a href="" aria-label="4"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Manchester by the Sea"</span>, <span class="at">subtitle =</span> <span class="st">"Daily Gross (US$), United States"</span>, <span class="at">x =</span> <span class="st">"2016-2017"</span>)</span>
+<span id="cb4-5"><a href="" aria-label="5"></a>g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="loess-smoother-non-parametric" class="slide level2">
 <h2>Loess smoother (non-parametric)</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-label="1"></a>dfman<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dfman)<span class="sc">/</span>(<span class="fu">nrow</span>(dfman)<span class="sc">/</span><span class="dv">6</span>))</span>
+<span id="cb5-2"><a href="" aria-label="2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="" aria-label="3"></a>  <span class="fu">geom_point</span>()</span>
+<span id="cb5-4"><a href="" aria-label="4"></a>g <span class="sc">+</span></span>
+<span id="cb5-5"><a href="" aria-label="5"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="" aria-label="6"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">lwd =</span><span class="fl">1.5</span>, <span class="at">span =</span> .<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="" aria-label="7"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Loess smoother"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/loess-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="loess-smoother-conceptual-idea" class="slide level2">
 <h2>Loess smoother (conceptual idea)</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-label="1"></a>g <span class="sc">+</span></span>
+<span id="cb6-2"><a href="" aria-label="2"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="" aria-label="3"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">group =</span> Group), <span class="at">method =</span> <span class="st">'lm'</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="under-overfitting" class="slide level2">
 <h2>Under / overfitting</h2>
@@ -254,7 +311,7 @@
 <h2>Default smoothing parameter .75</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
@@ -262,7 +319,7 @@
 <h2>Change smoothing parameter .1</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">1</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">1</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
@@ -270,7 +327,7 @@
 <h2>Change smoothing parameter .5</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">5</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">5</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
@@ -278,7 +335,7 @@
 <h2>Change smoothing parameter .9</h2>
 <hr>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">9</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span =</span> .<span class="dv">9</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
@@ -286,77 +343,258 @@
 <h2></h2>
 
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="cyclical-trends" class="slide level2">
-<h2>Cyclical trends</h2>
+<section id="seasonal-trends" class="slide level2">
+<h2>Seasonal trends</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span> <span class="fu">geom_line</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="are-there-cyclical-patterns" class="slide level2">
-<h2>Are there cyclical patterns?</h2>
+<section id="are-there-seasonal-patterns" class="slide level2">
+<h2>Are there seasonal patterns?</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="section-1" class="slide level2">
 <h2></h2>
 <div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-label="1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb13-2"><a href="" aria-label="2"></a>p <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>(</span>
+<span id="cb13-3"><a href="" aria-label="3"></a>    dfman, <span class="at">x =</span> <span class="sc">~</span>Date, <span class="at">y =</span> <span class="sc">~</span>Gross,</span>
+<span id="cb13-4"><a href="" aria-label="4"></a>    <span class="at">type =</span> <span class="st">'scatter'</span>,</span>
+<span id="cb13-5"><a href="" aria-label="5"></a>    <span class="at">mode =</span> <span class="st">'lines+markers'</span>,</span>
+<span id="cb13-6"><a href="" aria-label="6"></a>    <span class="co"># Hover text:</span></span>
+<span id="cb13-7"><a href="" aria-label="7"></a>    <span class="at">hoverinfo =</span> <span class="st">'text'</span>,</span>
+<span id="cb13-8"><a href="" aria-label="8"></a>    <span class="at">text =</span> <span class="sc">~</span><span class="fu">paste</span>(Day)</span>
+<span id="cb13-9"><a href="" aria-label="9"></a>)</span>
+<span id="cb13-10"><a href="" aria-label="10"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-53df27d08036ec5068ab" style="width:60%;height:384px;"></div>
-<script type="application/json" data-for="htmlwidget-53df27d08036ec5068ab">{"x":{"visdat":{"4fb37c008abe":["function () ","plotlyVisDat"]},"cur_data":"4fb37c008abe","attrs":{"4fb37c008abe":{"x":{},"y":{},"mode":"lines+markers","hoverinfo":"text","text":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Date"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Gross"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["2016-11-18","2016-11-19","2016-11-20","2016-11-21","2016-11-22","2016-11-23","2016-11-24","2016-11-25","2016-11-26","2016-11-27","2016-11-28","2016-11-29","2016-11-30","2016-12-01","2016-12-02","2016-12-03","2016-12-04","2016-12-05","2016-12-06","2016-12-07","2016-12-08","2016-12-09","2016-12-10","2016-12-11","2016-12-12","2016-12-13","2016-12-14","2016-12-15","2016-12-16","2016-12-17","2016-12-18","2016-12-19","2016-12-20","2016-12-21","2016-12-22","2016-12-23","2016-12-24","2016-12-25","2016-12-26","2016-12-27","2016-12-28","2016-12-29","2016-12-30","2016-12-31","2017-01-01","2017-01-02","2017-01-03","2017-01-04","2017-01-05","2017-01-06","2017-01-07","2017-01-08","2017-01-09","2017-01-10","2017-01-11","2017-01-12","2017-01-13","2017-01-14","2017-01-15","2017-01-16","2017-01-17","2017-01-18","2017-01-19","2017-01-20","2017-01-21","2017-01-22","2017-01-23","2017-01-24","2017-01-25","2017-01-26","2017-01-27","2017-01-28","2017-01-29","2017-01-30","2017-01-31","2017-02-01","2017-02-02","2017-02-03","2017-02-04","2017-02-05","2017-02-06","2017-02-07","2017-02-08","2017-02-09","2017-02-10","2017-02-11","2017-02-12","2017-02-13","2017-02-14","2017-02-15","2017-02-16","2017-02-17","2017-02-18","2017-02-19","2017-02-20","2017-02-21","2017-02-22","2017-02-23","2017-02-24","2017-02-25","2017-02-26","2017-02-27","2017-02-28","2017-03-01","2017-03-02","2017-03-03","2017-03-04","2017-03-05","2017-03-06","2017-03-07","2017-03-08","2017-03-09","2017-03-10","2017-03-11","2017-03-12","2017-03-13","2017-03-14","2017-03-15","2017-03-16","2017-03-17","2017-03-18","2017-03-19","2017-03-20","2017-03-21","2017-03-22","2017-03-23","2017-03-24","2017-03-25","2017-03-26","2017-03-27","2017-03-28","2017-03-29","2017-03-30","2017-03-31","2017-04-01","2017-04-02","2017-04-03","2017-04-04","2017-04-05","2017-04-06","2017-04-07","2017-04-08","2017-04-09","2017-04-10","2017-04-11","2017-04-12","2017-04-13"],"y":[72658,90040,93800,32023,29989,41532,41597,450244,457589,318157,96024,106676,117557,112057,665888,999345,605678,197757,231147,215586,194857,922526,1401072,849326,355794,435857,393703,331826,1275856,1719724,1228248,606819,728056,619771,676337,951413,594526,1222881,1534324,1105513,1071162,1029716,1379010,1451378,1415658,1276660,607168,514954,470878,743626,1063558,711053,301192,377666,320448,303878,557697,831142,534388,363998,187062,158659,153772,244180,457423,247307,115837,181157,157323,162416,528971,934697,607428,188870,279459,213755,207494,392857,695339,238145,136581,189010,145279,127964,181931,334433,185890,76331,144346,79989,77364,146727,212327,166693,122598,97191,72474,96131,122441,267589,90948,51992,66404,48163,42482,67844,120821,73519,29703,35468,28331,24644,16475,30697,20202,14108,18449,14462,13684,7818,12387,8391,5785,8425,6723,5126,4344,5189,3552,2716,3847,3121,3280,1226,1710,1284,614,1357,1467,1130,1399,1540,2129,961,1579,1249,1050],"mode":"lines+markers","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu"],"type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-4e40087463f07bd9bb9a" style="width:60%;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-4e40087463f07bd9bb9a">{"x":{"visdat":{"6e8b33e04c84":["function () ","plotlyVisDat"]},"cur_data":"6e8b33e04c84","attrs":{"6e8b33e04c84":{"x":{},"y":{},"mode":"lines+markers","hoverinfo":"text","text":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"Date"},"yaxis":{"domain":[0,1],"automargin":true,"title":"Gross"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["2016-11-18","2016-11-19","2016-11-20","2016-11-21","2016-11-22","2016-11-23","2016-11-24","2016-11-25","2016-11-26","2016-11-27","2016-11-28","2016-11-29","2016-11-30","2016-12-01","2016-12-02","2016-12-03","2016-12-04","2016-12-05","2016-12-06","2016-12-07","2016-12-08","2016-12-09","2016-12-10","2016-12-11","2016-12-12","2016-12-13","2016-12-14","2016-12-15","2016-12-16","2016-12-17","2016-12-18","2016-12-19","2016-12-20","2016-12-21","2016-12-22","2016-12-23","2016-12-24","2016-12-25","2016-12-26","2016-12-27","2016-12-28","2016-12-29","2016-12-30","2016-12-31","2017-01-01","2017-01-02","2017-01-03","2017-01-04","2017-01-05","2017-01-06","2017-01-07","2017-01-08","2017-01-09","2017-01-10","2017-01-11","2017-01-12","2017-01-13","2017-01-14","2017-01-15","2017-01-16","2017-01-17","2017-01-18","2017-01-19","2017-01-20","2017-01-21","2017-01-22","2017-01-23","2017-01-24","2017-01-25","2017-01-26","2017-01-27","2017-01-28","2017-01-29","2017-01-30","2017-01-31","2017-02-01","2017-02-02","2017-02-03","2017-02-04","2017-02-05","2017-02-06","2017-02-07","2017-02-08","2017-02-09","2017-02-10","2017-02-11","2017-02-12","2017-02-13","2017-02-14","2017-02-15","2017-02-16","2017-02-17","2017-02-18","2017-02-19","2017-02-20","2017-02-21","2017-02-22","2017-02-23","2017-02-24","2017-02-25","2017-02-26","2017-02-27","2017-02-28","2017-03-01","2017-03-02","2017-03-03","2017-03-04","2017-03-05","2017-03-06","2017-03-07","2017-03-08","2017-03-09","2017-03-10","2017-03-11","2017-03-12","2017-03-13","2017-03-14","2017-03-15","2017-03-16","2017-03-17","2017-03-18","2017-03-19","2017-03-20","2017-03-21","2017-03-22","2017-03-23","2017-03-24","2017-03-25","2017-03-26","2017-03-27","2017-03-28","2017-03-29","2017-03-30","2017-03-31","2017-04-01","2017-04-02","2017-04-03","2017-04-04","2017-04-05","2017-04-06","2017-04-07","2017-04-08","2017-04-09","2017-04-10","2017-04-11","2017-04-12","2017-04-13"],"y":[72658,90040,93800,32023,29989,41532,41597,450244,457589,318157,96024,106676,117557,112057,665888,999345,605678,197757,231147,215586,194857,922526,1401072,849326,355794,435857,393703,331826,1275856,1719724,1228248,606819,728056,619771,676337,951413,594526,1222881,1534324,1105513,1071162,1029716,1379010,1451378,1415658,1276660,607168,514954,470878,743626,1063558,711053,301192,377666,320448,303878,557697,831142,534388,363998,187062,158659,153772,244180,457423,247307,115837,181157,157323,162416,528971,934697,607428,188870,279459,213755,207494,392857,695339,238145,136581,189010,145279,127964,181931,334433,185890,76331,144346,79989,77364,146727,212327,166693,122598,97191,72474,96131,122441,267589,90948,51992,66404,48163,42482,67844,120821,73519,29703,35468,28331,24644,16475,30697,20202,14108,18449,14462,13684,7818,12387,8391,5785,8425,6723,5126,4344,5189,3552,2716,3847,3121,3280,1226,1710,1284,614,1357,1467,1130,1399,1540,2129,961,1579,1249,1050],"mode":"lines+markers","hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"text":["Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon","Tue","Wed","Thu"],"type":"scatter","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
 <section id="mark-the-pattern" class="slide level2">
 <h2>Mark the pattern</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-label="1"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb14-2"><a href="" aria-label="2"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Manchester by the Sea"</span>,</span>
+<span id="cb14-3"><a href="" aria-label="3"></a>         <span class="at">subtitle =</span> <span class="st">"Daily Gross, United States"</span>)</span>
+<span id="cb14-4"><a href="" aria-label="4"></a>saturday <span class="ot">&lt;-</span> dfman <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">wday</span>(Date) <span class="sc">==</span> <span class="dv">7</span>)</span>
+<span id="cb14-5"><a href="" aria-label="5"></a>g <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> saturday, <span class="fu">aes</span>(Date, Gross),</span>
+<span id="cb14-6"><a href="" aria-label="6"></a>               <span class="at">color =</span> <span class="st">"deeppink"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
-<section id="facet-to-test-remove-cyclical-pattern" class="slide level2">
-<h2>Facet to test (remove) cyclical pattern</h2>
+<section id="facet-to-test-remove-seasonal-pattern" class="slide level2">
+<h2>Facet to test (remove) seasonal pattern</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-label="1"></a><span class="co"># facets</span></span>
+<span id="cb15-2"><a href="" aria-label="2"></a><span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="" aria-label="3"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb15-4"><a href="" aria-label="4"></a>    <span class="fu">facet_grid</span>(<span class="fu">wday</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>)<span class="sc">~</span>.)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="another-view" class="slide level2">
 <h2>Another view</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="" aria-label="2"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"grey30"</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb16-3"><a href="" aria-label="3"></a>    <span class="fu">facet_grid</span>(.<span class="sc">~</span><span class="fu">wday</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="" aria-label="4"></a>    <span class="fu">theme_linedraw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/facetbyday-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="with-smoother" class="slide level2">
 <h2>With smoother</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(dfman, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="" aria-label="2"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"grey30"</span>) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="" aria-label="3"></a>    <span class="fu">facet_grid</span>(.<span class="sc">~</span><span class="fu">wday</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="" aria-label="4"></a>    <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="" aria-label="5"></a>    <span class="fu">theme_linedraw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/facetbydaysmooth-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="cyclical-or-seasonal" class="slide level2">
+<h2>Cyclical or seasonal?</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-label="1"></a><span class="fu">data</span>(<span class="st">"economics"</span>, <span class="at">package =</span> <span class="st">"ggplot2"</span>)</span>
+<span id="cb18-2"><a href="" aria-label="2"></a></span>
+<span id="cb18-3"><a href="" aria-label="3"></a><span class="co"># Focus on unemployment rate</span></span>
+<span id="cb18-4"><a href="" aria-label="4"></a>econ <span class="ot">&lt;-</span> economics <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="" aria-label="5"></a>  <span class="fu">select</span>(date, unemploy, pop) <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="" aria-label="6"></a>  <span class="fu">mutate</span>(<span class="at">unemploy_rate =</span> unemploy <span class="sc">/</span> pop <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb18-7"><a href="" aria-label="7"></a></span>
+<span id="cb18-8"><a href="" aria-label="8"></a>econplot <span class="ot">&lt;-</span> econ <span class="sc">|&gt;</span></span>
+<span id="cb18-9"><a href="" aria-label="9"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> unemploy_rate)) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="" aria-label="10"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb18-11"><a href="" aria-label="11"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-12"><a href="" aria-label="12"></a>    <span class="at">title =</span> <span class="st">"U.S. Unemployment Rate"</span>,</span>
+<span id="cb18-13"><a href="" aria-label="13"></a>    <span class="at">x =</span> <span class="st">"Date"</span>,</span>
+<span id="cb18-14"><a href="" aria-label="14"></a>    <span class="at">y =</span> <span class="st">"Percent Unemployed"</span></span>
+<span id="cb18-15"><a href="" aria-label="15"></a>  )</span>
+<span id="cb18-16"><a href="" aria-label="16"></a>econplot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="trend" class="slide level2">
+<h2>Trend</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="" aria-label="1"></a>econplot <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Loess, span = .75"</span>), <span class="at">span =</span> .<span class="dv">75</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># used above</span></span>
+<span id="cb19-2"><a href="" aria-label="2"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"U.S. Unemployment Rate"</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="" aria-label="3"></a>  <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">"Smoother"</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"blue"</span>)) <span class="sc">+</span> </span>
+<span id="cb19-4"><a href="" aria-label="4"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="trend-and-cyclical-components" class="slide level2">
+<h2>Trend and cyclical components</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="" aria-label="1"></a>econ_trend <span class="ot">&lt;-</span> econ <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">trend =</span> <span class="fu">predict</span>(<span class="fu">loess</span>(unemploy_rate <span class="sc">~</span> <span class="fu">as.numeric</span>(date),</span>
+<span id="cb20-3"><a href="" aria-label="3"></a>                               <span class="at">data =</span> df)))</span>
+<span id="cb20-4"><a href="" aria-label="4"></a></span>
+<span id="cb20-5"><a href="" aria-label="5"></a>econ_cycle <span class="ot">&lt;-</span> econ_trend <span class="sc">|&gt;</span></span>
+<span id="cb20-6"><a href="" aria-label="6"></a>  <span class="fu">mutate</span>(<span class="at">cycle =</span> unemploy_rate <span class="sc">-</span> trend)</span>
+<span id="cb20-7"><a href="" aria-label="7"></a></span>
+<span id="cb20-8"><a href="" aria-label="8"></a>econ_cycle <span class="sc">|&gt;</span></span>
+<span id="cb20-9"><a href="" aria-label="9"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(unemploy_rate, trend, cycle),</span>
+<span id="cb20-10"><a href="" aria-label="10"></a>               <span class="at">names_to =</span> <span class="st">"component"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-11"><a href="" aria-label="11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="" aria-label="12"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="" aria-label="13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="fu">fct_rev</span>(component), <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="" aria-label="14"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-15"><a href="" aria-label="15"></a>    <span class="at">title =</span> <span class="st">"Unemployment Rate: Trend and Cyclical Components"</span>,</span>
+<span id="cb20-16"><a href="" aria-label="16"></a>    <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Percent"</span></span>
+<span id="cb20-17"><a href="" aria-label="17"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-18"><a href="" aria-label="18"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="whats-wrong" class="slide level2">
+<h2>What’s wrong?</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="" aria-label="1"></a>econ_trend <span class="ot">&lt;-</span> econ <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="" aria-label="2"></a>  <span class="fu">mutate</span>(<span class="at">trend =</span> <span class="fu">predict</span>(<span class="fu">loess</span>(unemploy_rate <span class="sc">~</span> <span class="fu">as.numeric</span>(date),</span>
+<span id="cb21-3"><a href="" aria-label="3"></a>                               <span class="at">span =</span> .<span class="dv">2</span>, <span class="at">data =</span> df)))</span>
+<span id="cb21-4"><a href="" aria-label="4"></a></span>
+<span id="cb21-5"><a href="" aria-label="5"></a>econ_cycle <span class="ot">&lt;-</span> econ_trend <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="" aria-label="6"></a>  <span class="fu">mutate</span>(<span class="at">cycle =</span> unemploy_rate <span class="sc">-</span> trend)</span>
+<span id="cb21-7"><a href="" aria-label="7"></a></span>
+<span id="cb21-8"><a href="" aria-label="8"></a>econ_cycle <span class="sc">|&gt;</span></span>
+<span id="cb21-9"><a href="" aria-label="9"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(unemploy_rate, trend, cycle),</span>
+<span id="cb21-10"><a href="" aria-label="10"></a>               <span class="at">names_to =</span> <span class="st">"component"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-11"><a href="" aria-label="11"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb21-12"><a href="" aria-label="12"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="" aria-label="13"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span><span class="fu">fct_rev</span>(component), <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb21-14"><a href="" aria-label="14"></a>  <span class="fu">labs</span>(</span>
+<span id="cb21-15"><a href="" aria-label="15"></a>    <span class="at">title =</span> <span class="st">"Unemployment Rate: Trend and Cyclical Components"</span>,</span>
+<span id="cb21-16"><a href="" aria-label="16"></a>    <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Percent"</span></span>
+<span id="cb21-17"><a href="" aria-label="17"></a>  ) <span class="sc">+</span></span>
+<span id="cb21-18"><a href="" aria-label="18"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<section id="whats-wrong-1" class="slide level2">
+<h2>What’s wrong?</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="" aria-label="1"></a>econplot <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Loess, span = .2"</span>), <span class="at">span =</span> .<span class="dv">2</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> <span class="co"># used above</span></span>
+<span id="cb22-2"><a href="" aria-label="2"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"U.S. Unemployment Rate"</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="" aria-label="3"></a>  <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">"Smoother"</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="" aria-label="4"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="what-about-the-abnormalities" class="slide level2">
 <h2>What about the abnormalities?</h2>
 <hr>
 <p>Label by day of week</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="" aria-label="1"></a>christmas <span class="ot">&lt;-</span> dfman <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="" aria-label="2"></a>    <span class="fu">filter</span>(Date <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">"2016-12-20"</span>) <span class="sc">&amp;</span></span>
+<span id="cb23-3"><a href="" aria-label="3"></a>               Date <span class="sc">&lt;=</span> (<span class="st">"2017-01-03"</span>))</span>
+<span id="cb23-4"><a href="" aria-label="4"></a></span>
+<span id="cb23-5"><a href="" aria-label="5"></a><span class="fu">ggplot</span>(christmas, <span class="fu">aes</span>(Date, Gross)) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="" aria-label="6"></a>    <span class="fu">geom_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">wday</span>(Date, <span class="at">label =</span> <span class="cn">TRUE</span>))) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="" aria-label="7"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"cornflowerblue"</span>) <span class="sc">+</span> </span>
+<span id="cb23-8"><a href="" aria-label="8"></a>    <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%b</span><span class="sc">\n</span><span class="st">%d"</span>,</span>
+<span id="cb23-9"><a href="" aria-label="9"></a>                 <span class="at">date_breaks =</span> <span class="st">"1 day"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/christmas-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="different-pattern-for-christmas-week" class="slide level2">
 <h2>Different pattern for Christmas Week</h2>
 <hr>
 <p>Label by day of month</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(christmas, <span class="fu">aes</span>(Date, Gross<span class="sc">/</span><span class="dv">1000000</span>)) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="" aria-label="2"></a>    <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"cornflowerblue"</span>, <span class="at">lwd =</span> <span class="fl">1.1</span>) <span class="sc">+</span> </span>
+<span id="cb24-3"><a href="" aria-label="3"></a>    <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"cornflowerblue"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="" aria-label="4"></a>    <span class="fu">geom_label</span>(<span class="at">data =</span> christmas, </span>
+<span id="cb24-5"><a href="" aria-label="5"></a>               <span class="fu">aes</span>(<span class="at">x =</span> Date, <span class="at">y =</span> Gross<span class="sc">/</span><span class="dv">1000000</span> <span class="sc">+</span> .<span class="dv">06</span>, </span>
+<span id="cb24-6"><a href="" aria-label="6"></a>                   <span class="at">label =</span> <span class="fu">day</span>(Date))) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="" aria-label="7"></a>    <span class="fu">scale_x_date</span>(<span class="at">date_labels =</span> <span class="st">"%a"</span>,</span>
+<span id="cb24-8"><a href="" aria-label="8"></a>                 <span class="at">date_breaks =</span> <span class="st">"1 day"</span>) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="" aria-label="9"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Manchester by the Sea"</span>, </span>
+<span id="cb24-10"><a href="" aria-label="10"></a>         <span class="at">subtitle =</span> <span class="st">"Christmas Week Box Office Gross"</span>,</span>
+<span id="cb24-11"><a href="" aria-label="11"></a>         <span class="at">x =</span> <span class="st">"Dec 2016 - Jan 2017"</span>, </span>
+<span id="cb24-12"><a href="" aria-label="12"></a>         <span class="at">y =</span> <span class="st">"Daily Gross (in millions $US)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/christmas2-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="highlight-the-abnormality" class="slide level2">
 <h2>Highlight the abnormality</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="" aria-label="1"></a><span class="co"># annotate Christmas Week</span></span>
+<span id="cb25-2"><a href="" aria-label="2"></a>start <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2016-12-24"</span>)</span>
+<span id="cb25-3"><a href="" aria-label="3"></a>end <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2017-01-02"</span>)</span>
+<span id="cb25-4"><a href="" aria-label="4"></a>g <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> start, <span class="at">xmax =</span> end,</span>
+<span id="cb25-5"><a href="" aria-label="5"></a>             <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">fill =</span> <span class="st">"green"</span>,</span>
+<span id="cb25-6"><a href="" aria-label="6"></a>             <span class="at">alpha =</span> .<span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="" aria-label="7"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> end <span class="sc">+</span> <span class="dv">2</span>,</span>
+<span id="cb25-8"><a href="" aria-label="8"></a>             <span class="at">y =</span> <span class="dv">1500000</span>, <span class="at">label =</span> <span class="st">"Dec 24 - Jan 2"</span>,</span>
+<span id="cb25-9"><a href="" aria-label="9"></a>             <span class="at">color =</span> <span class="st">"green"</span>, <span class="at">hjust =</span> <span class="dv">0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="comparisons-multi-line-plots" class="slide level2">
 <h2>Comparisons (multi-line plots)</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">5702</span>)</span>
+<span id="cb26-2"><a href="" aria-label="2"></a>tidydf <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">time =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">y1 =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">6</span>, <span class="dv">100</span>, <span class="dv">50</span>), <span class="dv">2</span>),</span>
+<span id="cb26-3"><a href="" aria-label="3"></a>           <span class="at">y2 =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">5</span>), <span class="dv">2</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb26-4"><a href="" aria-label="4"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>time)</span>
+<span id="cb26-5"><a href="" aria-label="5"></a><span class="fu">ggplot</span>(tidydf, <span class="fu">aes</span>(time, value, <span class="at">col =</span> name)) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="" aria-label="6"></a>  <span class="fu">geom_line</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="scale-the-data-create-an-index" class="slide level2">
 <h2>Scale the data (create an index)</h2>
 <hr>
 <p>In each group divide by first value, mult by 100</p>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">head</span>(tidydf, <span class="dv">8</span>)</span>
-<span id="cb5-2"><a href=""></a>tidydf_scaled <span class="ot">&lt;-</span> tidydf <span class="sc">|&gt;</span> <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>value<span class="sc">/</span>value[<span class="dv">1</span>], <span class="dv">2</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href=""></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb5-5"><a href=""></a><span class="fu">head</span>(tidydf_scaled, <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="" aria-label="1"></a><span class="fu">head</span>(tidydf, <span class="dv">8</span>)</span>
+<span id="cb27-2"><a href="" aria-label="2"></a>tidydf_scaled <span class="ot">&lt;-</span> tidydf <span class="sc">|&gt;</span> <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="" aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">index =</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>value<span class="sc">/</span>value[<span class="dv">1</span>], <span class="dv">2</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb27-4"><a href="" aria-label="4"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb27-5"><a href="" aria-label="5"></a><span class="fu">head</span>(tidydf_scaled, <span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
 <div class="quarto-layout-row">
 <div class="cell-output cell-output-stdout quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <pre><code># A tibble: 8 × 3
@@ -390,19 +628,25 @@
 <section id="comparisons-multi-line-plots-1" class="slide level2">
 <h2>Comparisons (multi-line plots)</h2>
 <hr>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout-ncol="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(tidydf, <span class="fu">aes</span>(time, value, <span class="at">col =</span> name)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="" aria-label="2"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="" aria-label="3"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original data"</span>)</span>
+<span id="cb30-4"><a href="" aria-label="4"></a><span class="fu">ggplot</span>(tidydf_scaled, <span class="fu">aes</span>(time, index, <span class="at">col =</span> name)) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="" aria-label="5"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb30-6"><a href="" aria-label="6"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Scaled data"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2" data-layout-align="center">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-18-1.png" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-18-2.png" class="quarto-figure quarto-figure-center"></p>
+<p><img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-23-2.png" class="quarto-figure quarto-figure-center"></p>
 </figure>
 </div>
 </div>
@@ -412,40 +656,117 @@
 <section id="discrete-data" class="slide level2">
 <h2>Discrete data</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="" aria-label="1"></a><span class="fu">set.seed</span>(<span class="dv">5702</span>)</span>
+<span id="cb31-2"><a href="" aria-label="2"></a>day <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">31</span></span>
+<span id="cb31-3"><a href="" aria-label="3"></a>number <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">*</span> (day <span class="sc">-</span> <span class="dv">14</span>)<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2000</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">31</span>, <span class="dv">0</span>, <span class="dv">400</span>)</span>
+<span id="cb31-4"><a href="" aria-label="4"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(day, number)</span>
+<span id="cb31-5"><a href="" aria-label="5"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(day, number)) <span class="sc">+</span></span>
+<span id="cb31-6"><a href="" aria-label="6"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"deeppink"</span>) <span class="sc">+</span></span>
+<span id="cb31-7"><a href="" aria-label="7"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"deeppink"</span>) <span class="sc">+</span></span>
+<span id="cb31-8"><a href="" aria-label="8"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">31</span>) <span class="sc">+</span></span>
+<span id="cb31-9"><a href="" aria-label="9"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5000</span>)) <span class="sc">+</span></span>
+<span id="cb31-10"><a href="" aria-label="10"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average Motor Vehicle Inspections per Day"</span>,</span>
+<span id="cb31-11"><a href="" aria-label="11"></a>          <span class="at">subtitle =</span> <span class="st">"(fake data)"</span>,</span>
+<span id="cb31-12"><a href="" aria-label="12"></a>       <span class="at">x =</span> <span class="st">"day of month"</span>, <span class="at">y =</span> <span class="st">"number of inspections"</span>) <span class="sc">+</span></span>
+<span id="cb31-13"><a href="" aria-label="13"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 <img data-src="Timeseries_2025_files/figure-revealjs/inspection-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="better-for-individual-values" class="slide level2">
 <h2>Better for individual values</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="" aria-label="1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(day, number)) <span class="sc">+</span></span>
+<span id="cb32-2"><a href="" aria-label="2"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb32-3"><a href="" aria-label="3"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">31</span>) <span class="sc">+</span></span>
+<span id="cb32-4"><a href="" aria-label="4"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average Motor Vehicle Inspections per Day"</span>,</span>
+<span id="cb32-5"><a href="" aria-label="5"></a>       <span class="at">x =</span> <span class="st">"day of month"</span>, <span class="at">y =</span> <span class="st">"number of inspections"</span>) <span class="sc">+</span></span>
+<span id="cb32-6"><a href="" aria-label="6"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="gaps" class="slide level2">
 <h2>Gaps</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="" aria-label="1"></a><span class="co"># read file</span></span>
+<span id="cb33-2"><a href="" aria-label="2"></a>mydat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"WA_Sales_Products_2012-14.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb33-3"><a href="" aria-label="3"></a>  <span class="fu">mutate</span>(<span class="at">Revenue =</span> Revenue<span class="sc">/</span><span class="dv">1000000</span>)</span>
+<span id="cb33-4"><a href="" aria-label="4"></a></span>
+<span id="cb33-5"><a href="" aria-label="5"></a><span class="co"># convert Quarter to a single numeric value Q</span></span>
+<span id="cb33-6"><a href="" aria-label="6"></a>mydat<span class="sc">$</span>Q <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(mydat<span class="sc">$</span>Quarter, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb33-7"><a href="" aria-label="7"></a></span>
+<span id="cb33-8"><a href="" aria-label="8"></a><span class="co"># convert Q to end-of-quarter date</span></span>
+<span id="cb33-9"><a href="" aria-label="9"></a>mydat<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(mydat<span class="sc">$</span>Year, <span class="st">"-"</span>,</span>
+<span id="cb33-10"><a href="" aria-label="10"></a>                             <span class="fu">as.character</span>(mydat<span class="sc">$</span>Q<span class="sc">*</span><span class="dv">3</span>),</span>
+<span id="cb33-11"><a href="" aria-label="11"></a>                             <span class="st">"-30"</span>))</span>
+<span id="cb33-12"><a href="" aria-label="12"></a></span>
+<span id="cb33-13"><a href="" aria-label="13"></a><span class="co"># Check that dates look ok</span></span>
+<span id="cb33-14"><a href="" aria-label="14"></a><span class="co"># unique(mydat$Date)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="" aria-label="1"></a>Methoddata <span class="ot">&lt;-</span> mydat <span class="sc">|&gt;</span> <span class="fu">group_by</span>(Date, <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="" aria-label="2"></a>    <span class="fu">summarize</span>(<span class="at">Revenue =</span> <span class="fu">sum</span>(Revenue))</span>
+<span id="cb34-3"><a href="" aria-label="3"></a></span>
+<span id="cb34-4"><a href="" aria-label="4"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Methoddata, <span class="fu">aes</span>(Date, Revenue,</span>
+<span id="cb34-5"><a href="" aria-label="5"></a>                            <span class="at">color =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="" aria-label="6"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb34-7"><a href="" aria-label="7"></a>    <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.Date</span>(<span class="st">"2012-02-01"</span>), <span class="fu">as.Date</span>(<span class="st">"2014-12-31"</span>)),</span>
+<span id="cb34-8"><a href="" aria-label="8"></a>        <span class="at">date_breaks =</span> <span class="st">"6 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b %Y"</span>) <span class="sc">+</span></span>
+<span id="cb34-9"><a href="" aria-label="9"></a>  <span class="fu">ylab</span>(<span class="st">"Revenue in mil $"</span>)</span>
+<span id="cb34-10"><a href="" aria-label="10"></a>g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-26-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="add-points-to-show-the-frequency-of-the-data" class="slide level2">
 <h2>Add points to show the frequency of the data</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-27-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="another-example" class="slide level2">
 <h2>Another example</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="" aria-label="1"></a>No2013 <span class="ot">&lt;-</span> Methoddata <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">year</span>(Date) <span class="sc">!=</span> <span class="dv">2013</span>)</span>
+<span id="cb36-2"><a href="" aria-label="2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(No2013, <span class="fu">aes</span>(Date, Revenue,</span>
+<span id="cb36-3"><a href="" aria-label="3"></a>                            <span class="at">color =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb36-4"><a href="" aria-label="4"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb36-5"><a href="" aria-label="5"></a>    <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.Date</span>(<span class="st">"2012-02-01"</span>), <span class="fu">as.Date</span>(<span class="st">"2014-12-31"</span>)),</span>
+<span id="cb36-6"><a href="" aria-label="6"></a>        <span class="at">date_breaks =</span> <span class="st">"6 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b %Y"</span>) <span class="sc">+</span></span>
+<span id="cb36-7"><a href="" aria-label="7"></a>  <span class="fu">ylab</span>(<span class="st">"Revenue in mil $"</span>)</span>
+<span id="cb36-8"><a href="" aria-label="8"></a>g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-23-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-28-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="add-points-to-show-the-frequency-of-the-data-1" class="slide level2">
 <h2>Add points to show the frequency of the data</h2>
 <hr>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="" aria-label="1"></a>g <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-24-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+</div>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-29-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="another-option-leave-gaps" class="slide level2">
 <h2>Another option: leave gaps</h2>
 <hr>
 <p>(set missing values to NA)</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="" aria-label="1"></a>Methoddata<span class="sc">$</span>Date[<span class="fu">year</span>(Methoddata<span class="sc">$</span>Date)<span class="sc">==</span><span class="dv">2013</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb38-2"><a href="" aria-label="2"></a>g <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Methoddata, <span class="fu">aes</span>(Date, Revenue,</span>
+<span id="cb38-3"><a href="" aria-label="3"></a>                            <span class="at">color =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span> </span>
+<span id="cb38-4"><a href="" aria-label="4"></a>    <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="st">`</span><span class="at">Order method type</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="" aria-label="5"></a>    <span class="fu">scale_x_date</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.Date</span>(<span class="st">"2012-02-01"</span>), <span class="fu">as.Date</span>(<span class="st">"2014-12-31"</span>)),</span>
+<span id="cb38-6"><a href="" aria-label="6"></a>        <span class="at">date_breaks =</span> <span class="st">"6 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b %Y"</span>) <span class="sc">+</span></span>
+<span id="cb38-7"><a href="" aria-label="7"></a>  <span class="fu">ylab</span>(<span class="st">"Revenue in mil $"</span>)</span>
+<span id="cb38-8"><a href="" aria-label="8"></a>g</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
+</div>
 
-<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-25-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<img data-src="Timeseries_2025_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
@@ -637,7 +958,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -749,13 +1070,14 @@
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
