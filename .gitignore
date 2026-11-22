@@ -3,5 +3,8 @@
 .Rdata
 .httr-oauth
 .DS_Store
-*_files/
-*_cache/
+Dates_2025_files/
+Dates_2024_files/
+Timeseries_2025_cache/
+Timeseries_2025_files/
+

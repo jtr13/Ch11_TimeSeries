@@ -45,9 +45,8 @@ missing values, outliers, sudden changes
 ```{r mortgagepres}
 # data from https://www.freddiemac.com/pmms (Download .xlsx file)
 library(tidyverse)
-library(readxl)
 theme_set(theme_linedraw(16))
-df <- read_xlsx("historicalweeklydata.xlsx") 
+df <- read_csv("historicalmortgage.csv") 
 df <- df |> 
   pivot_longer(cols = -DATE, names_to = "TYPE", values_to = "RATE") |> 
   mutate(TYPE = forcats::fct_reorder2(TYPE, DATE, RATE)) # puts legend in correct order
